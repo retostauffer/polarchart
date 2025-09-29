@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-from stars import stars
+from starplot import stars
 import pandas as pd
 import matplotlib.pyplot as plt
 

@@ -1,5 +1,10 @@
 
 
+
+# Cleaning up development environment
+clean:
+	-rm -rf dist starplot.egg-info starplot/__pycache__
+
 venv: requirements.txt
 	-rm -rf venv
 	virtualenv venv ## expecting python3 by default
@@ -14,6 +19,9 @@ install: setup.py
 sdist:
 	-rm -rf dist
 	python setup.py sdist
+
+wheel:
+	python setup.py bdist_wheel --universal
 
 # Rules to push releases to PyPI test and PyPI.
 # Makes use of the token/config stored in $HOME/.pypirc

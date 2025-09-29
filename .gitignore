@@ -1,5 +1,5 @@
 
 # Always ignore
 __pycache__
-/stars.egg-info
+/starplot.egg-info
 /dist
