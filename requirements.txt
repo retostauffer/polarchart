@@ -1,0 +1,6 @@
+ipython
+setuptools
+numpy
+pandas
+matplotlib
+

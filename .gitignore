@@ -1,0 +1,4 @@
+
+# Always ignore
+__pycache__
+/stars.egg-info
