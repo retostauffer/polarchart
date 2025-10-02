@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
-from starplot import stars
+from radarchart import radar, load_mtcars
 import pandas as pd
 import matplotlib.pyplot as plt
+
+mtcars = load_mtcars()
 
 # Create a sample DataFrame for demonstration
 data = {
@@ -9,12 +11,12 @@ data = {
     'Efficiency (L/100km)': [6.5, 4.0, 7.8],
     'Durability (Years)': [12, 18, 8],
     'Cost ($1000s)': [30, 15, 45],
-    'Aesthetics (Score)': [7, 9, 6]
+    'Aesthetics (Score)': [700, 900, 600]
 }
 df_widgets = pd.DataFrame(data, index=['Widget A', 'Widget B', 'Widget C'])
 
-# Call the starsplot() function
-ax = stars(df_widgets, line_colors=['#007ACC', '#FF4500', '#3CB371'])
+# Call the radar() function
+ax = radar(df_widgets, line_colors=['#007ACC', '#FF4500', '#3CB371'])
 
 # Add a title
 ax.set_title('Widget Comparison Across Key Metrics', size=14, y=1.1)

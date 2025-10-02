@@ -30,8 +30,9 @@ setuptools.setup(
         #"Intended Audience :: Science/Research",
         #"Topic :: Scientific/Engineering :: Visualization",
     ],
-    python_requires='>=3.10',
+    python_requires = ">=3.10",
 
     # Should package data be included? (MANIFEST)
-    #include_package_data=True,
+    include_package_data = True,
+    package_data = {"": ["data/*.csv"]}
 )
