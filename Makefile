@@ -3,12 +3,13 @@
 
 # Cleaning up development environment
 clean:
-	-rm -rf dist starplot.egg-info starplot/__pycache__
+	-rm -rf dist *.egg-info */__pycache__
 
+# Using python -m venv .venv to make be found by positron
 venv: requirements.txt
 	-rm -rf venv
-	virtualenv venv ## expecting python3 by default
-	venv/bin/python -m pip install -r requirements.txt
+	python3 -m venv .venv
+	.venv/bin/python -m pip install -r requirements.txt
 
 install: setup.py
 	@echo "********* REMOVE AND REINSTALL PY PACKAGE *********"

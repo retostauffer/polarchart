@@ -6,12 +6,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name         = "starplot",
-    version      = "0.0.2",
+    name         = "radarchart",
+    version      = "0.0.1",
     author       = "Reto Stauffer",
     author_email = "Reto.Stauffer@uibk.ac.at",
     description  = "A Python package for creating Star Plots (Radar Charts).",
-    url          = "https://git.uibk.ac.at/c4031021/starplot",
+    url          = "https://git.uibk.ac.at/c4031021/radarchart",
     #long_description=long_description,
     #long_description_content_type="text/markdown",
     #packages=setuptools.find_packages(exclude=['tests', 'docs']),
