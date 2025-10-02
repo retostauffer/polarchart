@@ -30,7 +30,7 @@ setuptools.setup(
         #"Intended Audience :: Science/Research",
         #"Topic :: Scientific/Engineering :: Visualization",
     ],
-    python_requires='>=3.13',
+    python_requires='>=3.10',
 
     # Should package data be included? (MANIFEST)
     #include_package_data=True,
