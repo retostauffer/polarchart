@@ -4,7 +4,7 @@ import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
 
-def radar(df, ax=None, line_colors=None, fill=True, alpha=0.25, line_width=1.5, **kwargs):
+def radar_GPT(df, ax=None, line_colors=None, fill=True, alpha=0.25, line_width=1.5, **kwargs):
     """
     Plots a Star Plot (Radar Chart) for each row in a DataFrame.
 

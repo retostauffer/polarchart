@@ -12,9 +12,9 @@ venv: requirements.txt
 	.venv/bin/python -m pip install -r requirements.txt
 
 install: setup.py
-	@echo "********* REMOVE AND REINSTALL PY PACKAGE *********"
+	@echo "********* REMOVE AND REINSTALL PY PACKAGE (developer version) *********"
 	python setup.py clean --all && \
-	pip install -e .
+	python -m pip install -e .
 
 # Prepare package for PyPI submission
 sdist:
