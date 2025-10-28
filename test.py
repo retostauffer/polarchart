@@ -13,7 +13,7 @@ reto =  dict(a = [0.499, 0.167, 0.134, 3.53],
              c = [0.184, 0.407, 0.334, 2.53],
              d = [0.519, 0.077, 0.234, 3.13])
 reto = pd.DataFrame(reto, index = ["foo", "bar", "three", "four"])             
-ax = radar(reto)
+ax = radar(reto, ncol = None, angle = 0)
 
 sys.exit(" -- dev stop test.py -- ")
 

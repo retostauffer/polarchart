@@ -19,6 +19,7 @@ setuptools.setup(
         "numpy>=2.3",
         "pandas>=2.3",
         "matplotlib>=3.10",
+        "colorspace>=1.0",
     ],
     classifiers=[
         # Classifiers help users find your package on PyPI
