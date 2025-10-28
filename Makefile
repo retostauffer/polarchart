@@ -8,7 +8,7 @@ clean:
 # Using python -m venv .venv to make be found by positron
 venv: requirements.txt
 	-rm -rf venv
-	python3 -m venv .venv
+	python3 -m virtualenv .venv
 	.venv/bin/python -m pip install -r requirements.txt
 
 install: setup.py

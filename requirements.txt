@@ -3,4 +3,5 @@ setuptools
 numpy
 pandas
 matplotlib
+colorspace
 
