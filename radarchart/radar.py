@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 from colorspace import qualitative_hcl
 
-def radar(df, ax = None, ncol = None, scale = True,
+def radar(df, ax = None, ncol = None, scale = True, circles = True,
           legend_position = None, **kwargs):
     """radar(df, ax = None, scale = True, **kwargs)
 
@@ -22,6 +22,8 @@ def radar(df, ax = None, ncol = None, scale = True,
         by the user to adjust the gridding.
     scale : bool
         Should the data in 'df' be scaled?
+    circles : bool
+        If True, circles are drawn on top of the radar charts.
     legend_position : None or tuple
         If 'None' the legend is positioned automatically. A tuple can
         be provided (x/y coordinates) to manually position, where
@@ -53,6 +55,12 @@ def radar(df, ax = None, ncol = None, scale = True,
         if not isinstance(kwargs["angle"], (int, float)):
             raise TypeError("**kwarg 'angle' must be str")
     angle = 0 if not "angle" in kwargs else kwargs["angle"]
+
+    # Default radius used for scaling. 0.5 means that the segments of
+    # neighboring radar charts would touch (if x == 1); so we use
+    # something < 0.5 to allow all segments to have enough space to 
+    # be plotted, at least if the data are scaled (x in [0, 1]).
+    radius = 0.43
 
     # -----------------------------------------------------------------
     # Sanity checks
@@ -108,13 +116,11 @@ def radar(df, ax = None, ncol = None, scale = True,
         # If 'ncol' is an integer the job is easy
         if ncol is not None:
             nrow = int(np.ceil(n / ncol))
-            print(f" --------- {n=}    {nrow=} / {ncol=}")
             return nrow, ncol
         # Else we guess based on the aspect ratio of the axis
         asp  = float(axsize[1] / axsize[0])
         nrow = int(np.round(np.sqrt(n / asp)))
         ncol = int(np.ceil(n / nrow))
-        print(f" --------- {asp=}      {n=}    {nrow=} / {ncol=}")
         return nrow, ncol
 
     # Has the user set a custom legend position?
@@ -141,7 +147,8 @@ def radar(df, ax = None, ncol = None, scale = True,
     # Hiding axis, setting (preliminary) limits. We'll draw
     # the * plots at a regular grid with coordinates (1, 1)
     # if we only have one; this way we can keep the scaling
-    # to '1.0' to fill one square.
+    # to '1.0' to fill one square. Accounts for custom and
+    # automatic legend positioning.
     ax.set_axis_off()
     ax.set_xlim(min(-0.5, legend_position[0] - 0.5),
                 max(ncol - 0.5, legend_position[0] + 0.5))
@@ -153,7 +160,6 @@ def radar(df, ax = None, ncol = None, scale = True,
     ax.invert_yaxis()
     ax.set_aspect('equal')
 
-
     # x/y are the positionas as well as the indices!
     col_index = np.reshape(range(ncol * nrow), (nrow, ncol), order = "C")
     #print(col_index)
@@ -161,8 +167,9 @@ def radar(df, ax = None, ncol = None, scale = True,
     # Set of colors
     color = qualitative_hcl("Dynamic")(df.shape[1])
 
-    print(f"   {ncol=}  {nrow=}")
-    print(col_index)
+    # ---------------------------------------------------------------
+    # Adding 'data' (drawing the different radar plots)
+    # ---------------------------------------------------------------
     for x in range(ncol):
         for y in range(nrow):
             idx = col_index[y, x]
@@ -172,9 +179,11 @@ def radar(df, ax = None, ncol = None, scale = True,
 
             print(f"Drawing {x=}, {y=}")
 
-            polygons = calc_radar_coords(df.iloc[idx, :],
-                                         center = (x, y), color = color,
-                                         angle = angle)
+            polygons, labels = calc_radar_coords(df.iloc[idx, :],
+                                                 center = (x, y),
+                                                 color  = color,
+                                                 radius = radius,
+                                                 angle  = angle)
             ## Draw polygons
             for p in polygons.values(): ax.add_patch(p)
             ## Adding label
@@ -182,45 +191,43 @@ def radar(df, ax = None, ncol = None, scale = True,
                     ha = "center",
                     va = "bottom" if idx % 2 == 0 else "top")
 
+            if circles:
+                for c in get_circles(center = (x, y), radius = radius):
+                    ax.add_patch(c)
 
+    # ---------------------------------------------------------------
+    # Adding legend
+    # ---------------------------------------------------------------
+    tmp = pd.Series(data = np.repeat(1.0, df.shape[1]),
+                    index = df.columns, name = "legend")
+    polygons, labels = calc_radar_coords(tmp,
+                                         center = legend_position,
+                                         color  = color,
+                                         radius = 0.25,
+                                         angle  = angle)
+    for k in polygons.keys():
+        ax.add_patch(polygons[k])
+        ax.text(x = labels[k][0], y = labels[k][1], s = k,
+                ha = "center", va = "center")
 
-    ## Adding legend
-
-    def add_legend(ax, labels, center, color, angle, radius):
-        tmp = pd.Series(data = np.repeat(1.0, len(labels)),
-                        index = df.columns, name = "legend")
-        legend_polygon = calc_radar_coords(tmp,
-                                           center = center,
-                                           color = color,
-                                           angle = angle,
-                                           radius = radius)
-        for p in legend_polygon.values(): ax.add_patch(p)
-
-        # Labels
-        # TODO(R): 'theta' is also calculated in calc_radar_coords,
-        #          maybe write a little function for that.
-        anglerad = angle / 180 * np.pi
-        theta    = np.linspace(0, -2 * np.pi, len(labels) + 1) + anglerad
-        theta    = (theta[:-1] + theta[1:]) / 2.0
-        for i in range(len(labels)):
-            ax.text(x = center[0] + 1.4 * radius * np.cos(theta[i]),
-                    y = center[1] + 1.4 * radius * np.sin(theta[i]),
-                    s = labels[i],
-                    va = "center", ha = "center")
-
-    add_legend(ax, labels = df.columns, center = legend_position,
-               color = color, angle = angle, radius = 0.2)
-
+    # ---------------------------------------------------------------
+    # Adjusting axis and show plot (if required)
+    # ---------------------------------------------------------------
     ax.spines["right"].set_visible(False)
     ax.spines["top"].set_visible(False)
     ax.set_title(title)
 
-    plt.show()
+    # If 'fig = None' the user provided their own axis ('ax = ...'),
+    # in this case we just return the axis. Else we show the plot.
+    if fig is not None:
+        plt.show()
+    else:
+        return ax
 
 
-def calc_radar_coords(x, center, color, angle = 0, radius = 0.40,
+def calc_radar_coords(x, center, color, radius, angle = 0,
                       edgecolor = "gray", linewidth = 0.5):
-    """calc_radar_coords(x, center, color, angle = 0, radius = 0.40)
+    """calc_radar_coords(x, center, color, radius, angle = 0, edgecolor = "gray", linewidth = 0.5)
 
     Params
     ======
@@ -232,9 +239,6 @@ def calc_radar_coords(x, center, color, angle = 0, radius = 0.40,
         plot used for positioning.
     color : list
         List of valid colors used as facecolor of the segments.
-    angle : float or int
-        Rotation angle (in degrees), defaults to '0'. When '0'
-        the first segments starts "to the right" of the center.
     radius : float
         Radius of the segments, defaults to '0.43'.
         The plotting function uses a "1 by 1" grid, i.e., two
@@ -243,6 +247,9 @@ def calc_radar_coords(x, center, color, angle = 0, radius = 0.40,
         where 'x = 1.0' will have a radius of '0.43' which gives
         us enough space to draw the radar plots side-by-side without
         overlap. If `x` is not scaled the picture looks different, though.
+    angle : float or int
+        Rotation angle (in degrees), defaults to '0'. When '0'
+        the first segments starts "to the right" of the center.
     edgecolor : str, int, None
         Edge color used to draw polygon outlines.
     linewidth : float
@@ -250,9 +257,11 @@ def calc_radar_coords(x, center, color, angle = 0, radius = 0.40,
 
     Return
     ======
-    dict : A dictionary with a series of 'matplotlib.patches.Polygons'
-    which represent the segments to be drawn. The dict keys correspond
-    to the index of the pandas series ('x').
+    list of dicts : Returns two dictionaries. The first one contains
+    a series of 'matplotlib.patches.Polygons' which define the segments
+    to be drawn, the second one (same length) a series of tuples corresponding
+    to the '(x, y)' coordinates to position the labels. The dict keys correspond
+    to the labels (properties) of the different segments.
     """
     ## Offset of 0.45 ensures that the segments can all be drawn
     ## on a grid of 1 by 1 (x == 1 results in a radius of 'radius'
@@ -265,8 +274,12 @@ def calc_radar_coords(x, center, color, angle = 0, radius = 0.40,
     ## Angles for the arc (radiant)
     theta  = np.linspace(0, -2 * np.pi, len(x) + 1) + anglerad
 
+    ## Middle of the theta segments, used for legend positioning
+    theta_mids = (theta[:-1] + theta[1:]) / 2.0
+
     ## Resulting dictionary
     result = dict()
+    labels = dict()
 
     ## Create Polygon for each of the segments
     for i in range(len(x)):
@@ -285,5 +298,32 @@ def calc_radar_coords(x, center, color, angle = 0, radius = 0.40,
                                      edgecolor = edgecolor,
                                      linewidth = linewidth)
 
+        # Calculating label position
+        labels[x.index[i]] = (center[0] + 1.4 * radius * np.cos(theta_mids[i]),
+                              center[1] + 1.4 * radius * np.sin(theta_mids[i]))
+
+    return result, labels
+
+
+def get_circles(center, radius, at = (0.5, 1.0)):
+    n = 180
+    theta  = np.linspace(0, -2 * np.pi, 180)
+
+    result = []
+    for a in at:
+        # Multiply by radius for proper scaling
+        arc_x  = center[0] + a * radius * np.cos(theta)
+        arc_y  = center[1] + a * radius * np.sin(theta)
+        circle = np.column_stack([arc_x, arc_y])
+
+        # Setting up matplotlib.patches.Polygon
+        result.append(Polygon(circle,
+                              closed    = True,
+                              fill      = False,
+                              edgecolor = "gray",
+                              linestyle = "-",
+                              linewidth = 0.5))
     return result
+
+
 
