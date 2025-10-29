@@ -1,0 +1,86 @@
+---
+title: "Create radar charts."
+---
+
+WARNING(long_description missing)
+
+### Usage
+
+<pre><code class='language-python'>radar(df, ax=None, ncol=None, scale=True,<br/>      circles=True, legend_position=None,<br/>      color=None, **kwargs)</code></pre>
+
+### Arguments
+
+<dl class="pyp-list param-list">
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.radar.radar:df">df</code><code class="argument-class">pandas.core.frame.DataFrame</code>
+  </dt>
+ <dd>A pandas DataFrame with numeric values.
+Must have an index as well as column mames (TODO).</dd>
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.radar.radar:ax">ax</code><code class="argument-class">None or matplotlib.axes._axes.Axes</code>
+  </dt>
+ <dd>If None, a new figure is
+initialized. Else the existing axis is taken, manipulated, and populated.</dd>
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.radar.radar:ncol">ncol</code><code class="argument-class">None or int</code>
+  </dt>
+ <dd>If none, a (near) quadratic grid will be created. Can e
+specified by the user to adjust the gridding.</dd>
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.radar.radar:scale">scale</code><code class="argument-class">bool</code>
+  </dt>
+ <dd>Should the data in 'df' be scaled?</dd>
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.radar.radar:circles">circles</code><code class="argument-class">bool</code>
+  </dt>
+ <dd>If True, circles are drawn on top of the radar charts.</dd>
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.radar.radar:legend_position">legend_position</code><code class="argument-class">None, bool, or tuple</code>
+  </dt>
+ <dd>If 'None' (or 'True') the legend is
+positioned automatically. A tuple can be provided (x/y coordinates) to
+manually position, where '(x, y)' corresponds to '(left, downwards)' with
+'(0, 0)' corresponding to the position of the first radar plot (top left
+one). If set 'False' the legend will not be drawn at all.</dd>
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.radar.radar:color">color</code><code class="argument-class">None, list</code>
+  </dt>
+ <dd>If `None` N colors from the qualitative
+palette 'Dynamic' (`colorspace.qualitative_hcl("Dynamic")`) will
+be used. Can be a list of valid colors/hex colors.</dd>
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.radar.radar:**kwargs">**kwargs</code>
+  </dt>
+ <dd>Additional keyword arguments, see Details for more information.</dd>
+</dl>
+
+### Return
+
+If `ax = None` (no custom axis provided) there is no return but
+the plot created will be shown. If a custom axis is used the
+(modified) axis is returned.
+
+### Examples
+
+```{python}
+#| echo: true
+#| warning: true
+#| error: true
+from polarchart import load_mtcars, radar
+mt = load_mtcars().iloc[1:5, ]
+print(mt)
+## Default options
+radar(mt, title = "Default radar chart")
+## Customized: No circles, custom legend position, colors,
+## and figure size.
+from colorspace import diverging_hcl
+radar(mt,
+      title   = "Customized radar chart",
+      circles = False,
+      legend_position = (1.5, 2),
+      color   = diverging_hcl("Green-Orange")(mt.shape[1]),
+      figsize = (12, 8))
+```
+
+
+

@@ -6,47 +6,66 @@ from matplotlib.patches import Polygon
 from colorspace import qualitative_hcl
 
 def radar(df, ax = None, ncol = None, scale = True, circles = True,
-          legend_position = None, **kwargs):
-    """radar(df, ax = None, ncol = None, scale = True, circles = True,
-          legend_position = None, **kwargs):
+          legend_position = None, color = None, **kwargs):
+    """Create radar charts.
 
-    Params
-    ======
-    df : DataFrame
-        A pandas DataFrame with numeric values. Must have an index
-        as well as column mames (TODO).
-    ax : None or matplotlib.axes._axes.Axes
-        If None, a new figure is initialized. Else the existing
-        axis is taken, manipulated, and populated.
-    ncol : None or int
-        If none, a (near) quadratic grid will be created. Can e specified
-        by the user to adjust the gridding.
-    scale : bool
-        Should the data in 'df' be scaled?
-    circles : bool
-        If True, circles are drawn on top of the radar charts.
-    legend_position : None, bool, or tuple
-        If 'None' (or 'True') the legend is positioned automatically. A tuple can
-        be provided (x/y coordinates) to manually position, where
-        '(x, y)' corresponds to '(left, downwards)' with '(0, 0)' corresponding
-        to the position of the first radar plot (top left one). If
-        set 'False' the legend will not be drawn at all.
+    Args:
+        df (pandas.core.frame.DataFrame): A pandas DataFrame with numeric values.
+            Must have an index as well as column mames (TODO).
+        ax (None or matplotlib.axes._axes.Axes): If None, a new figure is
+            initialized. Else the existing axis is taken, manipulated, and populated.
+        ncol (None or int): If none, a (near) quadratic grid will be created. Can e
+            specified by the user to adjust the gridding.
+        scale (bool):
+            Should the data in 'df' be scaled?
+        circles (bool):
+            If True, circles are drawn on top of the radar charts.
+        legend_position (None, bool, or tuple): If 'None' (or 'True') the legend is
+            positioned automatically. A tuple can be provided (x/y coordinates) to
+            manually position, where '(x, y)' corresponds to '(left, downwards)' with
+            '(0, 0)' corresponding to the position of the first radar plot (top left
+            one). If set 'False' the legend will not be drawn at all.
+        color (None, list): If `None` N colors from the qualitative
+            palette 'Dynamic' (`colorspace.qualitative_hcl("Dynamic")`) will
+            be used. Can be a list of valid colors/hex colors.
+        **kwargs:
+            Additional keyword arguments, see Details for more information.
 
-    **kwargs : various
-        Additional keyword arguments, see Details for more information.
+    Returns:
+        If `ax = None` (no custom axis provided) there is no return but
+        the plot created will be shown. If a custom axis is used the
+        (modified) axis is returned.
 
-    Details
-    =======
-    Allowed additional arguments via the named **kwargs:
-    - "title" (str): Plot title
-    - "angle" (int, float): Rotation angle in degrees.
-    - "figsize" (tuple): Custom figure size, ignored if an axis ('ax') is provided.
+    Details:
+
+        Allowed additional arguments via the named **kwargs:
+        - "title" (str): Plot title
+        - "angle" (int, float): Rotation angle in degrees.
+        - "figsize" (tuple): Custom figure size, ignored if an axis ('ax') is provided.
+
+    Examples:
+
+        >>> from polarchart import load_mtcars, radar
+        >>> mt = load_mtcars().iloc[1:5, ]
+        >>> print(mt)
+        >>>
+        >>> ## Default options
+        >>> radar(mt, title = "Default radar chart")
+        >>>
+        >>> ## Customized: No circles, custom legend position, colors,
+        >>> ## and figure size.
+        >>> from colorspace import diverging_hcl
+        >>>
+        >>> radar(mt,
+        >>>       title   = "Customized radar chart",
+        >>>       circles = False,
+        >>>       legend_position = (1.5, 2),
+        >>>       color   = diverging_hcl("Green-Orange")(mt.shape[1]),
+        >>>       figsize = (12, 8))
     """
 
     from pandas import DataFrame
     from matplotlib import axes
-
-    import matplotlib.colors as mcolors
 
     if "title" in kwargs:
         if not isinstance(kwargs["title"], str):
@@ -79,6 +98,8 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
         raise TypeError("argument 'circles' must be bool")
     if not isinstance(legend_position, (type(None), tuple, bool)):
         raise TypeError("argument 'legend_position' must be None, bool, or a tuple")
+    if not isinstance(color, (type(None), list)):
+        raise TypeError("argument 'color' must be None or list")
     if legend_position is None: legend_position = True
 
     # Value checks
@@ -90,11 +111,20 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
         if not all([isinstance(x, (int, float)) for x in legend_position]):
             raise ValueError("elements in 'legend_position' must be numeric")
 
+    # Set of colors
+    if color is None:
+        color = qualitative_hcl("Dynamic")(df.shape[1])
+
     # -----------------------------------------------------------------
     # Preparing data
     # -----------------------------------------------------------------
+    # TODO(R): Currently not checking that we have an all-numeric
+    # DataFrame; and not yet implemented the feature where I can tell
+    # which column is my 'index column' (in case it is in the DataFrame
+    # and not already on the index).
+    df = df.astype(float)
     if scale:
-        from utils import scale_df
+        from .utils import scale_df
         df = scale_df(df)
 
     if ax is None:
@@ -173,9 +203,6 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
     # x/y are the positionas as well as the indices!
     col_index = np.reshape(range(ncol * nrow), (nrow, ncol), order = "C")
     #print(col_index)
-
-    # Set of colors
-    color = qualitative_hcl("Dynamic")(df.shape[1])
 
     # ---------------------------------------------------------------
     # Adding 'data' (drawing the different radar plots)

@@ -1,0 +1,27 @@
+execute:
+  cache: true
+  freeze: auto
+format:
+  html:
+    theme:
+    - quarto
+    - polarchart.scss
+    toc: true
+project:
+  output-dir: _site
+  title: polarchart
+  type: website
+website:
+  navbar:
+    left:
+    - file: index.qmd
+      text: Home
+  sidebar:
+    collapse-level: 1
+    contents:
+    - contents:
+      - file: man/polarchart.mtcars.load_mtcars.qmd
+        text: load_mtcars
+      - file: man/polarchart.radar.radar.qmd
+        text: radar
+      section: Function references

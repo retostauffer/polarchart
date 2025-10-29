@@ -12,7 +12,7 @@ setuptools.setup(
     author_email     = "Reto.Stauffer@uibk.ac.at",
     maintainer_email = "Reto.Stauffer@uibk.ac.at",
     license          = "GPL-2 | GPL-3",
-    description      = "A Python package for creating radar charts, star plots, and/or spider plots.",
+    description      = "Creating radar charts, star charts, and spider charts in Python",
     long_description              = long_description,
     long_description_content_type = "text/markdown",
 

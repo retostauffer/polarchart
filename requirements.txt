@@ -8,3 +8,5 @@ ipython
 setuptools
 build
 twine
+jupyter
+jupyter-cache

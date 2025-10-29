@@ -1,0 +1,54 @@
+name: Examples
+
+#on:
+#  push:
+#    branches:
+#      - main
+#  pull_request:
+#    branches:
+#      - main
+
+# Only run once the Testing action (pytest) has succeeded.
+# Else do not render the Documentation.
+on:
+  workflow_run:
+    workflows: ["Testing"] 
+    branches: ["main"]
+    types:
+      - completed
+
+jobs:
+  #build:
+  follow_up:
+    if: github.event.workflow_run.event == 'push'  # Ensure it runs only on push events
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Setting up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'  # Change to your preferred Python version
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install .
+
+    - name: Installing quarto
+      uses: quarto-dev/quarto-actions/setup@v2
+
+    ####- name: Install Quarto
+    ####  run: |
+    ####    wget https://github.com/quarto-dev/quarto-cli/releases/download/v1.9.9/quarto-1.9.9-linux-amd64.deb -O quarto.deb ## PRE RELEASE TEST
+    ####    sudo dpkg -i quarto.deb
+
+    - name: Render Quarto documents
+      run: |
+        make examples
+
+

@@ -1,0 +1,69 @@
+name: Documentation
+
+#on:
+#  push:
+#    branches:
+#      - main
+#  pull_request:
+#    branches:
+#      - main
+
+# Only run once the Testing action (pytest) has succeeded.
+# Else do not render the Documentation.
+on:
+  workflow_run:
+    workflows: ["Testing"] 
+    branches: ["main"]
+    types:
+      - completed
+
+jobs:
+  #build:
+  follow_up:
+    if: github.event.workflow_run.event == 'push'  # Ensure it runs only on push events
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Setting up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.11'  # Change to your preferred Python version
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -r requirements.txt
+        pip install .
+
+    - name: Installing quarto
+      uses: quarto-dev/quarto-actions/setup@v2
+
+    - name: Manipulate quarto yaml file
+      run: |
+        P_VERSION=`python --version | awk '{print $2}'`
+        Q_VERSION=`quarto --version`
+        X_VERSION=`pip list | egrep pyp2qmd | awk '{print $2}'`
+        sed -i "s/{{QUARTO_VERSION}}/${Q_VERSION}/g" _quarto/_quarto.yml
+        sed -i "s/{{PYTHON_VERSION}}/${P_VERSION}/g" _quarto/_quarto.yml
+        sed -i "s/{{PYP2QMD_VERSION}}/${X_VERSION}/g" _quarto/_quarto.yml
+
+    ##- name: Manipulate installation.qmd
+    ##  run: |
+    ##    ## Adding python versions we currently test for; .github/workflows/pytest.yml
+    ##    PYTEST_VERSIONS=`grep -Po "(?!=(python-version:))\[.*\]" .github/workflows/pytest.yml | sed 's/\[//g' | sed 's/\]//g' | sed 's/\"//g'`
+    ##    sed -i "s/{{PYTEST_VERSIONS}}/${PYTEST_VERSIONS}/g" _quarto/installation.qmd
+
+    - name: Render quarto documents
+      run: |
+        quarto render _quarto
+
+    - name: Deploy to GitHub Pages
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ./_quarto/_site  # Change to the output directory of your quarto render
+

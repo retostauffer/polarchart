@@ -1,0 +1,23 @@
+---
+title: Creating radar charts, star charts, and spider charts in Python
+---
+
+
+_polarchart_ is a Python package which allows to easily create
+a series of polar charts including radar charts (radar plots),
+star charts (star plots), and spider charts (spider plots)
+for multivariate data analysis.
+
+
+An example:
+
+```{python}
+from polarchart import load_mtcars, radar
+
+# Loading data set shipped with the package; pandas DataFrame
+mt = load_mtcars()
+mt.head(n = 2)
+
+# Creating radar chart
+radar(mt, scale = True, title = "Demo figure", figsize = (10, 8))
+```
