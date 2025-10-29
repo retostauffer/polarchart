@@ -33,6 +33,5 @@ setuptools.setup(
     packages = setuptools.find_packages(exclude = ["tests", "docs"]),
 
     # Should package data be included? (MANIFEST)
-    include_package_data = True,
-    package_data = {"": ["polarchart/data/*.csv"]}
+    include_package_data = True
 )

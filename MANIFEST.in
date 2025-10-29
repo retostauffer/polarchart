@@ -1,8 +1,8 @@
 
 #include README.md
 #include LICENSE
-include setup.py
-include data/mtcars.csv
+#include setup.py
+include polarchart/data/mtcars.csv
 
 # Test/package data
 #recursive-include pystars/data *
