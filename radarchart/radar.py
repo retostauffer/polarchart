@@ -5,7 +5,8 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 from colorspace import qualitative_hcl
 
-def radar(df, ax = None, ncol = None, scale = True, **kwargs):
+def radar(df, ax = None, ncol = None, scale = True,
+          legend_position = None, **kwargs):
     """radar(df, ax = None, scale = True, **kwargs)
 
     Params
@@ -21,6 +22,12 @@ def radar(df, ax = None, ncol = None, scale = True, **kwargs):
         by the user to adjust the gridding.
     scale : bool
         Should the data in 'df' be scaled?
+    legend_position : None or tuple
+        If 'None' the legend is positioned automatically. A tuple can
+        be provided (x/y coordinates) to manually position, where
+        '(x, y)' corresponds to '(left, downwards)' with '(0, 0)' corresponding
+        to the position of the first radar plot (top left one).
+
     **kwargs : various
         Additional keyword arguments, see Details for more information.
 
@@ -29,6 +36,7 @@ def radar(df, ax = None, ncol = None, scale = True, **kwargs):
     Allowed additional arguments via the named **kwargs:
     - "title" (str): Plot title
     - "angle" (int, float): Rotation angle in degrees.
+    - "figsize" (tuple): Custom figure size, ignored if an axis ('ax') is provided.
     """
 
     from pandas import DataFrame
@@ -46,7 +54,6 @@ def radar(df, ax = None, ncol = None, scale = True, **kwargs):
             raise TypeError("**kwarg 'angle' must be str")
     angle = 0 if not "angle" in kwargs else kwargs["angle"]
 
-
     # -----------------------------------------------------------------
     # Sanity checks
     # -----------------------------------------------------------------
@@ -58,14 +65,17 @@ def radar(df, ax = None, ncol = None, scale = True, **kwargs):
         raise TypeError("argument 'scale' must be boolean True (default) or False")
     if not isinstance(ncol, (type(None), int)):
         raise TypeError("argument 'nrow' must be None or int")
+    if not isinstance(legend_position, (type(None), tuple)):
+        raise TypeError("argument 'legend_position' must be None or a tuple")
+
+    # Value checks
     if isinstance(ncol, int) and ncol <= 0:
         raise ValueError("argument 'nrow' (if set) must be a positive integer")
-
-    if ax is None:
-        fig, ax = plt.subplots(figsize = (6, 6))
-
-    figsize = (fig.get_figheight(), fig.get_figwidth())
-    print(f"Current figure size: {figsize=}")
+    if isinstance(legend_position, tuple):
+        if not len(legend_position) == 2:
+            raise ValueError("if 'legend_position' is a tuple it must be of length 2")
+        if not all([isinstance(x, (int, float)) for x in legend_position]):
+            raise ValueError("elements in 'legend_position' must be numeric")
 
     # -----------------------------------------------------------------
     # Preparing data
@@ -74,16 +84,56 @@ def radar(df, ax = None, ncol = None, scale = True, **kwargs):
         from radarchart.utils import scale_df
         df = scale_df(df)
 
+    if ax is None:
+        figsize = (6, 6) if not "figsize" in kwargs else kwargs["figsize"]
+        fig, ax = plt.subplots(figsize = figsize)
+    else:
+        fig = None # Dummy which indicates the user provided an axis
+
+    # Determine size of the axis to find the best placement/grid for the plots
+    def axis_get_size(ax):
+        # Get axis position (relative) and scale it with figure size
+        bbox = ax.get_position()
+        fig_w, fig_h = ax.figure.get_size_inches()
+        ax_h = bbox.height * fig_h
+        ax_w = bbox.width  * fig_w
+        ##print(f"Current axis size:     height = {ax_h}, width = {ax_w}")
+        return((ax_h, ax_w))
+
+    axsize = axis_get_size(ax)
+
+    # Calculating x/y positions; number of df-rows + 1 to always have the
+    # very last space empty to draw the legend.
+    def get_gridsize(axsize, ncol, n):
+        # If 'ncol' is an integer the job is easy
+        if ncol is not None:
+            nrow = int(np.ceil(n / ncol))
+            print(f" --------- {n=}    {nrow=} / {ncol=}")
+            return nrow, ncol
+        # Else we guess based on the aspect ratio of the axis
+        asp  = float(axsize[1] / axsize[0])
+        nrow = int(np.round(np.sqrt(n / asp)))
+        ncol = int(np.ceil(n / nrow))
+        print(f" --------- {asp=}      {n=}    {nrow=} / {ncol=}")
+        return nrow, ncol
+
+    # Has the user set a custom legend position?
+    custom_legend_position = True if legend_position is not None else False
+
+    # The + int(not custom_legend_position) is used to save
+    # one grid for the legend if auto-positioned. Else the users
+    # has to find a suitable position themselves.
+    nrow, ncol = get_gridsize(axsize, ncol = ncol,
+                              n = df.shape[0] + int(not custom_legend_position))
+
+    # Setting automatic legend position (bottom right 'grid cell') if 
+    # no custom legend position was specified by the user.
+    if legend_position is None:
+        legend_position = (ncol - 1, nrow - 1)
+
     # -----------------------------------------------------------------
     # Plotting
     # -----------------------------------------------------------------
-
-    # Calculating x/y positions; number of rows + 1 to always have the
-    # very last space empty to draw the legend.
-    ncharts = df.shape[0] + 1
-    if ncol is None: ncol = int(np.floor(np.sqrt(ncharts)))
-    nrow = int(np.ceil(ncharts / ncol))
-    print(f"Need to draw {ncharts=} with {ncol=}/{nrow=}")
 
     # Keep aspect ratio 1:1
     ax.set_aspect("equal", adjustable = "box")
@@ -93,8 +143,10 @@ def radar(df, ax = None, ncol = None, scale = True, **kwargs):
     # if we only have one; this way we can keep the scaling
     # to '1.0' to fill one square.
     ax.set_axis_off()
-    ax.set_xlim(-0.5, ncol - 0.5)
-    ax.set_ylim(-0.5, nrow - 0.5)
+    ax.set_xlim(min(-0.5, legend_position[0] - 0.5),
+                max(ncol - 0.5, legend_position[0] + 0.5))
+    ax.set_ylim(min(-0.5, legend_position[1] - 0.5),
+                max(nrow - 0.5, legend_position[1] + 0.5))
 
     # Ensure x/y aspect is always 1:1 and invert the y-axis
     # so we draw out grid (0,0), (1,0), (2, 0) "top down"
@@ -119,27 +171,45 @@ def radar(df, ax = None, ncol = None, scale = True, **kwargs):
             if idx >= df.shape[0]: continue # Empty grid
 
             print(f"Drawing {x=}, {y=}")
-            ax.text(x, y, f"x={x},y={y}")
 
             polygons = calc_radar_coords(df.iloc[idx, :],
                                          center = (x, y), color = color,
                                          angle = angle)
-            ###calc_radar?
+            ## Draw polygons
             for p in polygons.values(): ax.add_patch(p)
+            ## Adding label
+            ax.text(x, y + 0.5, df.index[idx],
+                    ha = "center",
+                    va = "bottom" if idx % 2 == 0 else "top")
+
 
 
     ## Adding legend
-    tmp = pd.Series(data = np.repeat(0.8, df.shape[1]),
-                    index = df.columns, name = "legend")
-    print(tmp)
-    print(f"{nrow=}, {ncol=}")
-    legend_polygon = calc_radar_coords(tmp,
-                                       center = (ncol - 1, nrow - 1),
-                                       color = color,
-                                       angle = angle)
-    ax.text(ncol - 1, nrow - 1, "legend")
-    for p in legend_polygon.values(): ax.add_patch(p)
 
+    def add_legend(ax, labels, center, color, angle, radius):
+        tmp = pd.Series(data = np.repeat(1.0, len(labels)),
+                        index = df.columns, name = "legend")
+        legend_polygon = calc_radar_coords(tmp,
+                                           center = center,
+                                           color = color,
+                                           angle = angle,
+                                           radius = radius)
+        for p in legend_polygon.values(): ax.add_patch(p)
+
+        # Labels
+        # TODO(R): 'theta' is also calculated in calc_radar_coords,
+        #          maybe write a little function for that.
+        anglerad = angle / 180 * np.pi
+        theta    = np.linspace(0, -2 * np.pi, len(labels) + 1) + anglerad
+        theta    = (theta[:-1] + theta[1:]) / 2.0
+        for i in range(len(labels)):
+            ax.text(x = center[0] + 1.4 * radius * np.cos(theta[i]),
+                    y = center[1] + 1.4 * radius * np.sin(theta[i]),
+                    s = labels[i],
+                    va = "center", ha = "center")
+
+    add_legend(ax, labels = df.columns, center = legend_position,
+               color = color, angle = angle, radius = 0.2)
 
     ax.spines["right"].set_visible(False)
     ax.spines["top"].set_visible(False)
@@ -148,18 +218,52 @@ def radar(df, ax = None, ncol = None, scale = True, **kwargs):
     plt.show()
 
 
-def calc_radar_coords(x, center, color, angle = 0):
-    ## Additional rotation; angle is in degrees, convert to radiant
-    anglerad = angle / 180 * np.pi
+def calc_radar_coords(x, center, color, angle = 0, radius = 0.40,
+                      edgecolor = "gray", linewidth = 0.5):
+    """calc_radar_coords(x, center, color, angle = 0, radius = 0.40)
+
+    Params
+    ======
+    x : pandas.core.series.Series
+        A pandas series with numeric values for which the radar plot
+        segments need to be created.
+    center : tuple
+        Tuple with two numeric values defining the center of the radar
+        plot used for positioning.
+    color : list
+        List of valid colors used as facecolor of the segments.
+    angle : float or int
+        Rotation angle (in degrees), defaults to '0'. When '0'
+        the first segments starts "to the right" of the center.
+    radius : float
+        Radius of the segments, defaults to '0.43'.
+        The plotting function uses a "1 by 1" grid, i.e., two
+        neighboring radar plots are distanced by "1.0" on the x/y
+        coordinates. 'radius = 0.43' means that a segment
+        where 'x = 1.0' will have a radius of '0.43' which gives
+        us enough space to draw the radar plots side-by-side without
+        overlap. If `x` is not scaled the picture looks different, though.
+    edgecolor : str, int, None
+        Edge color used to draw polygon outlines.
+    linewidth : float
+        Width of the line for the polygon outlines.
+
+    Return
+    ======
+    dict : A dictionary with a series of 'matplotlib.patches.Polygons'
+    which represent the segments to be drawn. The dict keys correspond
+    to the index of the pandas series ('x').
+    """
     ## Offset of 0.45 ensures that the segments can all be drawn
     ## on a grid of 1 by 1 (x == 1 results in a radius of 'radius'
-    radius = 0.45
+    ## Additional rotation; angle is in degrees, convert to radiant
+    anglerad = angle / 180 * np.pi
     ## Rough radius interval (the smaller the 'rounder')
     radi   = 2 * np.pi / 180
-    ## Zero ('center') point
+    ## Zero coordinate point
     zero   = np.array([0])
     ## Angles for the arc (radiant)
-    theta  = np.linspace(0, 2 * np.pi, len(x) + 1) + anglerad
+    theta  = np.linspace(0, -2 * np.pi, len(x) + 1) + anglerad
 
     ## Resulting dictionary
     result = dict()
@@ -167,7 +271,7 @@ def calc_radar_coords(x, center, color, angle = 0):
     ## Create Polygon for each of the segments
     for i in range(len(x)):
         angle = np.hstack([np.linspace(theta[i], theta[i + 1],
-                                       int((theta[i + 1] - theta[i]) // radi))])
+                                       int(abs(theta[i + 1] - theta[i]) // radi))])
         # 0.45 so that x[i] = 1 corresponds to a radius of 0.45,
         # allowing all radar plots to exist next to each other
         # on a 1x1 grid.
@@ -177,7 +281,9 @@ def calc_radar_coords(x, center, color, angle = 0):
         # Setting up matplotlib.patches.Polygon
         result[x.index[i]] = Polygon(arc,
                                      closed = True,
-                                     facecolor = color[i])
+                                     facecolor = color[i],
+                                     edgecolor = edgecolor,
+                                     linewidth = linewidth)
 
     return result
 
