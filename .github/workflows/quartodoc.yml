@@ -11,11 +11,15 @@ name: Documentation
 # Only run once the Testing action (pytest) has succeeded.
 # Else do not render the Documentation.
 on:
-  workflow_run:
-    ###workflows: ["Testing"] 
-    branches: ["main"]
-    types:
-      - completed
+  push:
+    branch:
+      - main
+
+  #workflow_run:
+  #  workflows: ["Testing"] 
+  #  branches: ["main"]
+  #  types:
+  #    - completed
 
 jobs:
   #build:
