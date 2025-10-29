@@ -1,0 +1,33 @@
+[
+  {
+    "objectID": "man/polarchart.radar.radar.html",
+    "href": "man/polarchart.radar.radar.html",
+    "title": "Create radar charts.",
+    "section": "",
+    "text": "WARNING(long_description missing)\n\nUsage\nradar(df, ax=None, ncol=None, scale=True,      circles=True, legend_position=None,      color=None, **kwargs)\n\n\nArguments\n\n\ndfpandas.core.frame.DataFrame\n\n\nA pandas DataFrame with numeric values. Must have an index as well as column mames (TODO).\n\n\naxNone or matplotlib.axes._axes.Axes\n\n\nIf None, a new figure is initialized. Else the existing axis is taken, manipulated, and populated.\n\n\nncolNone or int\n\n\nIf none, a (near) quadratic grid will be created. Can e specified by the user to adjust the gridding.\n\n\nscalebool\n\n\nShould the data in ‘df’ be scaled?\n\n\ncirclesbool\n\n\nIf True, circles are drawn on top of the radar charts.\n\n\nlegend_positionNone, bool, or tuple\n\n\nIf ‘None’ (or ‘True’) the legend is positioned automatically. A tuple can be provided (x/y coordinates) to manually position, where ‘(x, y)’ corresponds to ‘(left, downwards)’ with ‘(0, 0)’ corresponding to the position of the first radar plot (top left one). If set ‘False’ the legend will not be drawn at all.\n\n\ncolorNone, list\n\n\nIf None N colors from the qualitative palette ‘Dynamic’ (colorspace.qualitative_hcl(\"Dynamic\")) will be used. Can be a list of valid colors/hex colors.\n\n\n**kwargs\n\n\nAdditional keyword arguments, see Details for more information.\n\n\n\n\nReturn\nIf ax = None (no custom axis provided) there is no return but the plot created will be shown. If a custom axis is used the (modified) axis is returned.\n\n\nExamples\n\nfrom polarchart import load_mtcars, radar\nmt = load_mtcars().iloc[1:5, ]\nprint(mt)\n## Default options\nradar(mt, title = \"Default radar chart\")\n## Customized: No circles, custom legend position, colors,\n## and figure size.\nfrom colorspace import diverging_hcl\nradar(mt,\n      title   = \"Customized radar chart\",\n      circles = False,\n      legend_position = (1.5, 2),\n      color   = diverging_hcl(\"Green-Orange\")(mt.shape[1]),\n      figsize = (12, 8))\n\n                    mpg  cyl   disp   hp  drat     wt   qsec\nMazda RX4 Wag      21.0    6  160.0  110  3.90  2.875  17.02\nDatsun 710         22.8    4  108.0   93  3.85  2.320  18.61\nHornet 4 Drive     21.4    6  258.0  110  3.08  3.215  19.44\nHornet Sportabout  18.7    8  360.0  175  3.15  3.440  17.02",
+    "crumbs": [
+      "Home",
+      "Function references",
+      "radar"
+    ]
+  },
+  {
+    "objectID": "index.html",
+    "href": "index.html",
+    "title": "Creating radar charts, star charts, and spider charts in Python",
+    "section": "",
+    "text": "polarchart is a Python package which allows to easily create a series of polar charts including radar charts (radar plots), star charts (star plots), and spider charts (spider plots) for multivariate data analysis.\nAn example:\n\nfrom polarchart import load_mtcars, radar\n\n# Loading data set shipped with the package; pandas DataFrame\nmt = load_mtcars()\nmt.head(n = 2)\n\n# Creating radar chart\nradar(mt, scale = True, title = \"Demo figure\", figsize = (10, 8))"
+  },
+  {
+    "objectID": "man/polarchart.mtcars.load_mtcars.html",
+    "href": "man/polarchart.mtcars.load_mtcars.html",
+    "title": "load_mtcars()",
+    "section": "",
+    "text": "Description\nThe data was extracted from the 1974 Motor Trend US magazine, and comprises fuel consumption and 10 aspects of automobile design and performance for 32 automobiles (1973-74 models).\nA data frame with 32 observations on 11 (numeric) variables.\n[, 1] ‘mpg’ Miles/(US) gallon\n[, 2] ‘cyl’ Number of cylinders\n[, 3] ‘disp’ Displacement (cu.in.)\n[, 4] ‘hp’ Gross horsepower\n[, 5] ‘drat’ Rear axle ratio\n[, 6] ‘wt’ Weight (1000 lbs)\n[, 7] ‘qsec’ 1/4 mile time\n[, 8] ‘vs’ Engine (0 = V-shaped, 1 = straight)\n[, 9] ‘am’ Transmission (0 = automatic, 1 = manual) [,10] ‘gear’ Number of forward gears\n[,11] ‘carb’ Number of carburetors\n\n\nSource\nBorrowed from the R package ‘datasets’; original source: Henderson and Velleman (1981), Building multiple regression models interactively. Biometrics, 37, 391-411.\n\n\nReturn\npandas.DataFrame : Returns a pandas DataFrame with the test data shipped with the package.\n\nUsage\nload_mtcars()",
+    "crumbs": [
+      "Home",
+      "Function references",
+      "load_mtcars"
+    ]
+  }
+]
