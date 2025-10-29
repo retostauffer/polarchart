@@ -23,7 +23,7 @@ def scale_df(df):
         mx = np.max(x)
         return (x - mn) / (mx - mn)
 
-    for i in range(df.shape[0]):
-        df.iloc[i, :] = fn(df.iloc[i, :])
+    for j in range(df.shape[1]):
+        df.iloc[:, j] = fn(df.iloc[:, j])
 
     return df
