@@ -9,3 +9,5 @@
 /_site/
 *_files/
 *.ipynb
+
+**/*.quarto_ipynb

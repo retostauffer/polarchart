@@ -64,8 +64,8 @@ the plot created will be shown. If a custom axis is used the
 
 ```{python}
 #| echo: true
-#| warning: true
 #| error: true
+#| warning: true
 from polarchart import load_mtcars, radar
 mt = load_mtcars().iloc[1:5, ]
 print(mt)

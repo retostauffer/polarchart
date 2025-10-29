@@ -10,3 +10,4 @@ build
 twine
 jupyter
 jupyter-cache
+pyp2qmd

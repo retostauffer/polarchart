@@ -42,7 +42,8 @@ render:
 install: setup.py
 	@echo "********* REMOVE AND REINSTALL PY PACKAGE (developer version) *********"
 	python setup.py clean --all && \
-	python -m pip install -e .
+	python -m pip install .
+	#python -m pip install -e .
 
 # Prepare package for PyPI submission
 .PHONY: build
