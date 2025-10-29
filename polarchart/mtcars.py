@@ -35,5 +35,5 @@ def load_mtcars():
     from importlib.resources import files
     from pandas import read_csv
 
-    csv = files("radarchart.data").joinpath("mtcars.csv")
+    csv = files("polarchart.data").joinpath("mtcars.csv")
     return read_csv(csv, index_col = 0)

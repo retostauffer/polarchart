@@ -1,7 +1,10 @@
-ipython
-setuptools
 numpy
 pandas
 matplotlib
 colorspace
 
+# Deveopment
+ipython
+setuptools
+build
+twine

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os, sys
-from radarchart import radar, load_mtcars
+from polarchart import radar, load_mtcars
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -9,7 +9,16 @@ mtcars = load_mtcars()
 mtcars = mtcars.iloc[:4, :]
 
 
-print(mtcars.head())
+ice = pd.read_csv("Ice.csv")
+print(ice.head())
+
+radar(ice, scale = True,
+      circles = False,
+      labels = True,
+      legend_position = False)
+
+sys.exit(" -- end of the ice f -- ")
+
 #radar(mtcars, scale = True, figsize = (5, 10))
 radar(mtcars, scale = True, figsize = (5, 10),
       legend_position = (-1, -1))

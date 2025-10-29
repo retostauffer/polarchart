@@ -7,7 +7,8 @@ from colorspace import qualitative_hcl
 
 def radar(df, ax = None, ncol = None, scale = True, circles = True,
           legend_position = None, **kwargs):
-    """radar(df, ax = None, scale = True, **kwargs)
+    """radar(df, ax = None, ncol = None, scale = True, circles = True,
+          legend_position = None, **kwargs):
 
     Params
     ======
@@ -24,11 +25,12 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
         Should the data in 'df' be scaled?
     circles : bool
         If True, circles are drawn on top of the radar charts.
-    legend_position : None or tuple
-        If 'None' the legend is positioned automatically. A tuple can
+    legend_position : None, bool, or tuple
+        If 'None' (or 'True') the legend is positioned automatically. A tuple can
         be provided (x/y coordinates) to manually position, where
         '(x, y)' corresponds to '(left, downwards)' with '(0, 0)' corresponding
-        to the position of the first radar plot (top left one).
+        to the position of the first radar plot (top left one). If
+        set 'False' the legend will not be drawn at all.
 
     **kwargs : various
         Additional keyword arguments, see Details for more information.
@@ -60,7 +62,7 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
     # neighboring radar charts would touch (if x == 1); so we use
     # something < 0.5 to allow all segments to have enough space to 
     # be plotted, at least if the data are scaled (x in [0, 1]).
-    radius = 0.43
+    radius = 0.4
 
     # -----------------------------------------------------------------
     # Sanity checks
@@ -73,8 +75,11 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
         raise TypeError("argument 'scale' must be boolean True (default) or False")
     if not isinstance(ncol, (type(None), int)):
         raise TypeError("argument 'nrow' must be None or int")
-    if not isinstance(legend_position, (type(None), tuple)):
-        raise TypeError("argument 'legend_position' must be None or a tuple")
+    if not isinstance(circles, bool):
+        raise TypeError("argument 'circles' must be bool")
+    if not isinstance(legend_position, (type(None), tuple, bool)):
+        raise TypeError("argument 'legend_position' must be None, bool, or a tuple")
+    if legend_position is None: legend_position = True
 
     # Value checks
     if isinstance(ncol, int) and ncol <= 0:
@@ -89,7 +94,7 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
     # Preparing data
     # -----------------------------------------------------------------
     if scale:
-        from radarchart.utils import scale_df
+        from utils import scale_df
         df = scale_df(df)
 
     if ax is None:
@@ -124,7 +129,7 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
         return nrow, ncol
 
     # Has the user set a custom legend position?
-    custom_legend_position = True if legend_position is not None else False
+    custom_legend_position = True if isinstance(legend_position, tuple) else False
 
     # The + int(not custom_legend_position) is used to save
     # one grid for the legend if auto-positioned. Else the users
@@ -133,8 +138,9 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
                               n = df.shape[0] + int(not custom_legend_position))
 
     # Setting automatic legend position (bottom right 'grid cell') if 
-    # no custom legend position was specified by the user.
-    if legend_position is None:
+    # no custom legend position was specified by the user. This variable
+    # is also specified if legend_position = False although never used.
+    if not isinstance(legend_position, tuple) and not legend_position is False:
         legend_position = (ncol - 1, nrow - 1)
 
     # -----------------------------------------------------------------
@@ -150,10 +156,14 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
     # to '1.0' to fill one square. Accounts for custom and
     # automatic legend positioning.
     ax.set_axis_off()
-    ax.set_xlim(min(-0.5, legend_position[0] - 0.5),
-                max(ncol - 0.5, legend_position[0] + 0.5))
-    ax.set_ylim(min(-0.5, legend_position[1] - 0.5),
-                max(nrow - 0.5, legend_position[1] + 0.5))
+    if not legend_position is False:
+        ax.set_xlim(min(-0.5, legend_position[0] - 0.5),
+                    max(ncol - 0.5, legend_position[0] + 0.5))
+        ax.set_ylim(min(-0.5, legend_position[1] - 0.5),
+                    max(nrow - 0.5, legend_position[1] + 0.5))
+    else:
+        ax.set_xlim(-0.5, ncol - 0.5)
+        ax.set_ylim(-0.5, nrow - 0.5)
 
     # Ensure x/y aspect is always 1:1 and invert the y-axis
     # so we draw out grid (0,0), (1,0), (2, 0) "top down"
@@ -175,10 +185,9 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
             idx = col_index[y, x]
             ## If 'idx >= df.shape[0]' this is an empty cell (as we
             ## reserve at least one for the legend).
-            if idx >= df.shape[0]: continue # Empty grid
+            if idx >= df.shape[0]: continue # Empty grid cell, continue
 
-            print(f"Drawing {x=}, {y=}")
-
+            ## Calculating polygons for segments as well as label positions
             polygons, labels = calc_radar_coords(df.iloc[idx, :],
                                                  center = (x, y),
                                                  color  = color,
@@ -187,28 +196,41 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
             ## Draw polygons
             for p in polygons.values(): ax.add_patch(p)
             ## Adding label
-            ax.text(x, y + 0.5, df.index[idx],
-                    ha = "center",
+            ax.text(x, y + 0.5, df.index[idx], ha = "center",
                     va = "bottom" if idx % 2 == 0 else "top")
 
             if circles:
-                for c in get_circles(center = (x, y), radius = radius):
-                    ax.add_patch(c)
+                # First we calculate what "useful" circles would be by
+                # checking the overall maximum of 'df' and then set up
+                # a vector with circles to draw; always on one digit
+                # after the decimal sign as the labels currently
+                # use ".1f" (rounded to closest 0.1).
+                at_max = df.max().max()
+                at_int = np.ceil(at_max / 5 * 10.) / 10.
+                at     = np.arange(at_int, at_max * 1.0001, step = at_int)
+                polygons, labels = get_circle_coords(center = (x, y),
+                                                     radius = radius, at = at)
+                for k,p in polygons.items():
+                    ax.add_patch(p)
+                    ax.text(x = labels[k][0], y = labels[k][1], s = k,
+                            ha = "center", va = "center", color = "gray",
+                            fontsize = 6)
 
     # ---------------------------------------------------------------
     # Adding legend
     # ---------------------------------------------------------------
-    tmp = pd.Series(data = np.repeat(1.0, df.shape[1]),
-                    index = df.columns, name = "legend")
-    polygons, labels = calc_radar_coords(tmp,
-                                         center = legend_position,
-                                         color  = color,
-                                         radius = 0.25,
-                                         angle  = angle)
-    for k in polygons.keys():
-        ax.add_patch(polygons[k])
-        ax.text(x = labels[k][0], y = labels[k][1], s = k,
-                ha = "center", va = "center")
+    if not legend_position is False:
+        tmp = pd.Series(data = np.repeat(1.0, df.shape[1]),
+                        index = df.columns, name = "legend")
+        polygons, labels = calc_radar_coords(tmp,
+                                             center = legend_position,
+                                             color  = color,
+                                             radius = 0.25,
+                                             angle  = angle)
+        for k in polygons.keys():
+            ax.add_patch(polygons[k])
+            ax.text(x = labels[k][0], y = labels[k][1], s = k,
+                    ha = "center", va = "center", fontsize = 7)
 
     # ---------------------------------------------------------------
     # Adjusting axis and show plot (if required)
@@ -288,8 +310,8 @@ def calc_radar_coords(x, center, color, radius, angle = 0,
         # 0.45 so that x[i] = 1 corresponds to a radius of 0.45,
         # allowing all radar plots to exist next to each other
         # on a 1x1 grid.
-        arc_x = center[0] + x[i] * radius * np.cos(angle)
-        arc_y = center[1] + x[i] * radius * np.sin(angle)
+        arc_x = center[0] + x.iloc[i] * radius * np.cos(angle)
+        arc_y = center[1] + x.iloc[i] * radius * np.sin(angle)
         arc   = np.vstack([center, np.column_stack([arc_x, arc_y])])
         # Setting up matplotlib.patches.Polygon
         result[x.index[i]] = Polygon(arc,
@@ -305,25 +327,31 @@ def calc_radar_coords(x, center, color, radius, angle = 0,
     return result, labels
 
 
-def get_circles(center, radius, at = (0.5, 1.0)):
-    n = 180
-    theta  = np.linspace(0, -2 * np.pi, 180)
+def get_circle_coords(center, radius, at):
+    n        = 180 # Aumber of points along the polygon
+    theta    = np.linspace(0, -2 * np.pi, 180) # Calculating angles
+    anglerad = -45 / 180 * np.pi
 
-    result = []
+    labels = dict()
+    result = dict()
     for a in at:
+        hash = f"{a:.1f}"
         # Multiply by radius for proper scaling
         arc_x  = center[0] + a * radius * np.cos(theta)
         arc_y  = center[1] + a * radius * np.sin(theta)
         circle = np.column_stack([arc_x, arc_y])
 
         # Setting up matplotlib.patches.Polygon
-        result.append(Polygon(circle,
-                              closed    = True,
-                              fill      = False,
-                              edgecolor = "gray",
-                              linestyle = "-",
-                              linewidth = 0.5))
-    return result
+        result[hash] = (Polygon(circle,
+                                closed    = True,
+                                fill      = False,
+                                edgecolor = "gray",
+                                linestyle = (0, (6, 7)), # loosely dashed
+                                linewidth = 0.5))
+        labels[hash] = (center[0] + a * radius * np.cos(anglerad),
+                        center[1] + a * radius * np.sin(anglerad))
+
+    return result, labels
 
 
 

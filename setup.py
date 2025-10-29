@@ -6,34 +6,33 @@ with open("README.md", "r", encoding="utf-8") as fh:
     long_description = fh.read()
 
 setuptools.setup(
-    name         = "radarchart",
-    version      = "0.0.1",
-    author       = "Reto Stauffer",
-    author_email = "Reto.Stauffer@uibk.ac.at",
-    description  = "A Python package for creating Star Plots (Radar Charts).",
-    url          = "https://git.uibk.ac.at/c4031021/radarchart",
-    #long_description=long_description,
-    #long_description_content_type="text/markdown",
-    #packages=setuptools.find_packages(exclude=['tests', 'docs']),
-    install_requires=[
-        "numpy>=2.3",
-        "pandas>=2.3",
-        "matplotlib>=3.10",
-        "colorspace>=1.0",
-    ],
+    name             = "polarchart",
+    version          = "0.0.1",
+    author           = "Reto Stauffer",
+    author_email     = "Reto.Stauffer@uibk.ac.at",
+    maintainer_email = "Reto.Stauffer@uibk.ac.at",
+    license          = "GPL-2 | GPL-3",
+    description      = "A Python package for creating radar charts, star plots, and/or spider plots.",
+    long_description              = long_description,
+    long_description_content_type = "text/markdown",
+
+    keywords         = "polar charts, radar chart, radar plot, star plot, star chart, spider plot, spider chart",
+    url          = "https://github.com/retostauffer/polarchart",
     classifiers=[
-        # Classifiers help users find your package on PyPI
         "Programming Language :: Python :: 3.13",
         "Development Status :: 1 - Planning",
-        "License :: OSI Approved :: GNU General Public License v2 (GPLv2)",
-        "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
-        "Operating System :: OS Independent"
-        #"Intended Audience :: Science/Research",
-        #"Topic :: Scientific/Engineering :: Visualization",
+        "Operating System :: OS Independent",
+        "Intended Audience :: Science/Research",
+        "Topic :: Scientific/Engineering :: Visualization"
     ],
+
+    install_requires = ["numpy>=2.3", "pandas>=2.3", "matplotlib>=3.10", "colorspace>=1.0"],
     python_requires = ">=3.10",
+
+    # Exclude on build
+    packages = setuptools.find_packages(exclude = ["tests", "docs"]),
 
     # Should package data be included? (MANIFEST)
     include_package_data = True,
-    package_data = {"": ["data/*.csv"]}
+    package_data = {"": ["polarchart/data/*.csv"]}
 )
