@@ -1,3 +1,3 @@
-# A Python package for creating Star Plots (Radar Charts)
+# Creating radar charts, star charts, and spider charts in Python
 
 TODO(R): t.b.d.
