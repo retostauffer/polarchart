@@ -134,10 +134,16 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
     # Preparing data
     # -----------------------------------------------------------------
 
+    # [!] First and formost: make a local copy of df to avoid
+    # messing with the users object (avoiding scoping and infix operations)
+    df = df.copy()
+
     # Return logical True/False if labels should be drawn later, and the modified
     # data set if everything goes well. Else prepare_data() will throw errors
     # and hints.
     labels, df = prepare_num_df(df, labels, numeric_only)
+
+    print(df)
 
     # Preparing the data frame
     df = df.astype(float)

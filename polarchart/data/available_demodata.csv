@@ -1,4 +1,5 @@
-name,  file,                       index_col,   description
-gsa,   gsa-country.csv,            0,           "TODO(R)"
-gsa2,  gsa-country.csv,            None,        "TODO(R)"
-gsa3,  gsa-country-extended.csv,   None,        "TODO(R)"
+name,  scale, file,                       index_col,   description
+gsa,   1.0,   gsa-country.csv,            0,           "TODO(R)"
+gsa2,  1.0,   gsa-country.csv,            None,        "TODO(R)"
+gsa3,  1.0,   gsa-country-extended.csv,   None,        "TODO(R)"
+gsa4,  100,   gsa-country-extended.csv,   None,        "TODO(R)"

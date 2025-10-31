@@ -140,11 +140,13 @@ def prepare_num_df(x, labels = True, numeric_only = False):
         raise Exception(msg)
     elif numeric_only:
         # There will be nothing left after subsetting as all is non-numeric? Well ...
+        print(isnum)
         if not isnum.any():
-            raise Exception("No numeric columns/variables in the DataFrame")
+            raise Exception("No numeric columns/variables found in the DataFrame")
 
         # Subsetting the data.frame
         x = x.iloc[:, isnum]
+
 
     # Converting labels to True in case it was str
     labels = True if isinstance(labels, str) else labels

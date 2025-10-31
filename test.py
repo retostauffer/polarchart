@@ -6,7 +6,34 @@ import pandas as pd
 import matplotlib.pyplot as plt
 
 ############ Only num
+gsa4 = get_demodata("gsa4")
+
+print(gsa4.head())
+radar(gsa4, labels = "ISO3", numeric_only = True,
+      angle = 45, title = "Testing angle argument")
+radar(gsa4, labels = "ISO3", numeric_only = True,
+      angle = 45, title = "Testing angle argument")
+radar(gsa4, labels = "ISO3", numeric_only = True,
+      scale = False)
+
+##
+import sys; sys.exit(" -- psa4 -- ")
 gsa3 = get_demodata("gsa3")
+
+
+
+gsa_x = gsa3.iloc[:, :6]
+print(gsa_x.head())
+radar(gsa_x, labels = "ISO3", numeric_only = True,
+      angle = 45, title = "Testing angle argument")
+radar(gsa_x, labels = "ISO3", numeric_only = True)
+
+radar(gsa_x, labels = "ISO3", numeric_only = True,
+      scale = True,
+      angle = 45, title = "Testing angle argument")
+
+sys.exit(" -- end of the gsa -- ")
+
 
 #radar(gsa3, scale = True)
 #radar(gsa3, labels = 'ISO3', scale = True)

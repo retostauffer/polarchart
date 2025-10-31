@@ -31,7 +31,8 @@ def get_demodata(name):
     """
     from importlib.resources import files
     from pandas import read_csv, DataFrame
-    from numpy import isnan
+    from pandas.api.types import is_numeric_dtype
+    from numpy import isnan, equal
 
     # Staying sane
     if not isinstance(name, (type(None), str)):
@@ -61,7 +62,15 @@ def get_demodata(name):
         res = read_csv(csv, index_col = index_col)
     except Exception as e:
         raise Exception("problems loading data set (\"{csv}\"): {e}")
-    finally:
-        return res
 
+    # Do we have to scale the numeric columns?
+    scale = datasets.scale[name]
+    if not equal(scale, 1):
+        isnum = res.apply(is_numeric_dtype).values
+        # If not numeric: ignore, else scale
+        for i in range(len(isnum)):
+            if not isnum[i]: continue
+            res.iloc[:, i] = res.iloc[:, i] * scale
+
+    return res
 
