@@ -126,6 +126,11 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
     if scale:
         from .utils import scale_df
         df = scale_df(df)
+        # After scaling max raduis (normalized) is 1
+        df_max = 1
+    else:
+        # Else we take the overall maximum for scaling the polygons and circles
+        df_max = df.max().max()
 
     if ax is None:
         figsize = (6, 6) if not "figsize" in kwargs else kwargs["figsize"]
@@ -219,6 +224,7 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
                                                  center = (x, y),
                                                  color  = color,
                                                  radius = radius,
+                                                 xmax   = df_max,
                                                  angle  = angle)
             ## Draw polygons
             for p in polygons.values(): ax.add_patch(p)
@@ -233,10 +239,12 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
                 # after the decimal sign as the labels currently
                 # use ".1f" (rounded to closest 0.1).
                 at_max = df.max().max()
-                at_int = np.ceil(at_max / 5 * 10.) / 10.
-                at     = np.arange(at_int, at_max * 1.0001, step = at_int)
+                from .utils import pretty_ticks
+                at     = pretty_ticks(at_max, 4)
                 polygons, labels = get_circle_coords(center = (x, y),
-                                                     radius = radius, at = at)
+                                                     radius = radius,
+                                                     at     = at,
+                                                     xmax   = df_max)
                 for k,p in polygons.items():
                     ax.add_patch(p)
                     ax.text(x = labels[k][0], y = labels[k][1], s = k,
@@ -253,6 +261,7 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
                                              center = legend_position,
                                              color  = color,
                                              radius = 0.25,
+                                             xmax   = 1, # fixed size
                                              angle  = angle)
         for k in polygons.keys():
             ax.add_patch(polygons[k])
@@ -274,43 +283,45 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
         return ax
 
 
-def calc_radar_coords(x, center, color, radius, angle = 0,
+def calc_radar_coords(x, center, color, radius, xmax, angle = 0,
                       edgecolor = "gray", linewidth = 0.5):
     """calc_radar_coords(x, center, color, radius, angle = 0, edgecolor = "gray", linewidth = 0.5)
 
-    Params
-    ======
-    x : pandas.core.series.Series
-        A pandas series with numeric values for which the radar plot
-        segments need to be created.
-    center : tuple
-        Tuple with two numeric values defining the center of the radar
-        plot used for positioning.
-    color : list
-        List of valid colors used as facecolor of the segments.
-    radius : float
-        Radius of the segments, defaults to '0.43'.
-        The plotting function uses a "1 by 1" grid, i.e., two
-        neighboring radar plots are distanced by "1.0" on the x/y
-        coordinates. 'radius = 0.43' means that a segment
-        where 'x = 1.0' will have a radius of '0.43' which gives
-        us enough space to draw the radar plots side-by-side without
-        overlap. If `x` is not scaled the picture looks different, though.
-    angle : float or int
-        Rotation angle (in degrees), defaults to '0'. When '0'
-        the first segments starts "to the right" of the center.
-    edgecolor : str, int, None
-        Edge color used to draw polygon outlines.
-    linewidth : float
-        Width of the line for the polygon outlines.
+    Args:
+        x : pandas.core.series.Series
+            A pandas series with numeric values for which the radar plot
+            segments need to be created.
+        center : tuple
+            Tuple with two numeric values defining the center of the radar
+            plot used for positioning.
+        color : list
+            List of valid colors used as facecolor of the segments.
+        radius : float
+            Radius of the segments, defaults to '0.43'.
+            The plotting function uses a "1 by 1" grid, i.e., two
+            neighboring radar plots are distanced by "1.0" on the x/y
+            coordinates. 'radius = 0.43' means that a segment
+            where 'x = 1.0' will have a radius of '0.43' which gives
+            us enough space to draw the radar plots side-by-side without
+            overlap. If `x` is not scaled the picture looks different, though.
+        xmax : num
+            Additional scaling factor. When plotting standardized
+            data `xmax = 1.0` so that the max radius is equal to
+            `radius`. All coordinates will be scaled with this factor.
+        angle : float or int
+            Rotation angle (in degrees), defaults to '0'. When '0'
+            the first segments starts "to the right" of the center.
+        edgecolor : str, int, None
+            Edge color used to draw polygon outlines.
+        linewidth : float
+            Width of the line for the polygon outlines.
 
-    Return
-    ======
-    list of dicts : Returns two dictionaries. The first one contains
-    a series of 'matplotlib.patches.Polygons' which define the segments
-    to be drawn, the second one (same length) a series of tuples corresponding
-    to the '(x, y)' coordinates to position the labels. The dict keys correspond
-    to the labels (properties) of the different segments.
+    Returns:
+        list of dicts : Returns two dictionaries. The first one contains
+        a series of 'matplotlib.patches.Polygons' which define the segments
+        to be drawn, the second one (same length) a series of tuples corresponding
+        to the '(x, y)' coordinates to position the labels. The dict keys correspond
+        to the labels (properties) of the different segments.
     """
     ## Offset of 0.45 ensures that the segments can all be drawn
     ## on a grid of 1 by 1 (x == 1 results in a radius of 'radius'
@@ -337,8 +348,8 @@ def calc_radar_coords(x, center, color, radius, angle = 0,
         # 0.45 so that x[i] = 1 corresponds to a radius of 0.45,
         # allowing all radar plots to exist next to each other
         # on a 1x1 grid.
-        arc_x = center[0] + x.iloc[i] * radius * np.cos(angle)
-        arc_y = center[1] + x.iloc[i] * radius * np.sin(angle)
+        arc_x = center[0] + x.iloc[i] * radius * np.cos(angle) / xmax
+        arc_y = center[1] + x.iloc[i] * radius * np.sin(angle) / xmax
         arc   = np.vstack([center, np.column_stack([arc_x, arc_y])])
         # Setting up matplotlib.patches.Polygon
         result[x.index[i]] = Polygon(arc,
@@ -354,18 +365,43 @@ def calc_radar_coords(x, center, color, radius, angle = 0,
     return result, labels
 
 
-def get_circle_coords(center, radius, at):
+def get_circle_coords(center, radius, at, xmax):
+    """Calculate Circle Polygons
+
+    Args:
+        center : tuple
+            Tuple of two numeric values defining the center of the
+            stars plot/center of the grid box.
+        radius : num
+            Positive numeric, maximum radius (if 0.5 neighboring
+            plots would touch as we are on a one-by-one grid).
+        at : list
+            List of numeric values for which a circle should be
+            drawn (calculated).
+        xmax : num
+            Additional scaling factor. When plotting standardized
+            data `xmax = 1.0` so that the max radius is equal to
+            `radius`. All coordinates will be scaled with this factor.
+
+    Returns:
+        dict : A dictionary of polygons (`matplotlib.patches.Polygon`s),
+        each of which defines one circle. The dict keys are used
+        as labels when drawn.
+    """
     n        = 180 # Aumber of points along the polygon
     theta    = np.linspace(0, -2 * np.pi, 180) # Calculating angles
     anglerad = -45 / 180 * np.pi
 
+    # Number of significant digits needed
+    digits = max(0, int((-np.log10(np.asarray(at))).max()))
+
     labels = dict()
     result = dict()
     for a in at:
-        hash = f"{a:.1f}"
+        hash = f"{a:.{digits}f}"
         # Multiply by radius for proper scaling
-        arc_x  = center[0] + a * radius * np.cos(theta)
-        arc_y  = center[1] + a * radius * np.sin(theta)
+        arc_x  = center[0] + a * radius * np.cos(theta) / xmax
+        arc_y  = center[1] + a * radius * np.sin(theta) / xmax
         circle = np.column_stack([arc_x, arc_y])
 
         # Setting up matplotlib.patches.Polygon
@@ -375,8 +411,8 @@ def get_circle_coords(center, radius, at):
                                 edgecolor = "gray",
                                 linestyle = (0, (6, 7)), # loosely dashed
                                 linewidth = 0.5))
-        labels[hash] = (center[0] + a * radius * np.cos(anglerad),
-                        center[1] + a * radius * np.sin(anglerad))
+        labels[hash] = (center[0] + a * radius * np.cos(anglerad) / xmax,
+                        center[1] + a * radius * np.sin(anglerad) / xmax)
 
     return result, labels
 
