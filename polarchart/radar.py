@@ -51,22 +51,22 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
 
     Examples:
 
-        >>> from polarchart import load_mtcars, radar
-        >>> mt = load_mtcars().iloc[1:5, ]
-        >>> print(mt)
+        >>> from polarchart import get_demodata, radar
+        >>> gsa = get_demodata("gsa")
+        >>> print(gsa.head())
         >>>
         >>> ## Default options
-        >>> radar(mt, title = "Default radar chart")
+        >>> radar(gsa, title = "Default radar chart")
         >>>
         >>> ## Customized: No circles, custom legend position, colors,
-        >>> ## and figure size.
+        >>> ##             and figure size.
         >>> from colorspace import diverging_hcl
         >>>
-        >>> radar(mt,
+        >>> radar(gsa,
         >>>       title   = "Customized radar chart",
         >>>       circles = False,
         >>>       legend_position = (1.5, 2),
-        >>>       color   = diverging_hcl("Green-Orange")(mt.shape[1]),
+        >>>       color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
         >>>       figsize = (12, 8))
     """
 
