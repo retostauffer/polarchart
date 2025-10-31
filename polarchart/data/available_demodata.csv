@@ -1,0 +1,4 @@
+name,  file,                       index_col,   description
+gsa,   gsa-country.csv,            0,           "TODO(R)"
+gsa2,  gsa-country.csv,            None,        "TODO(R)"
+gsa3,  gsa-country-extended.csv,   None,        "TODO(R)"

@@ -1,4 +1,4 @@
 
 
 from .radar import radar
-from .mtcars import load_mtcars
+from .get_demodata import get_demodata

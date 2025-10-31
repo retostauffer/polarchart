@@ -2,7 +2,9 @@
 #include README.md
 #include LICENSE
 #include setup.py
-include polarchart/data/mtcars.csv
+include polarchart/data/available_demodata.csv
+include polarchart/data/gsa-country.csv
+
 
 # Test/package data
 #recursive-include pystars/data *

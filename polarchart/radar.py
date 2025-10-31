@@ -5,13 +5,17 @@ import matplotlib.pyplot as plt
 from matplotlib.patches import Polygon
 from colorspace import qualitative_hcl
 
-def radar(df, ax = None, ncol = None, scale = True, circles = True,
-          legend_position = None, color = None, **kwargs):
+def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = True,
+          legend_position = None, color = None, numeric_only = False, **kwargs):
     """Create radar charts.
 
     Args:
         df (pandas.core.frame.DataFrame): A pandas DataFrame with numeric values.
             Must have an index as well as column mames (TODO).
+        labels (str, or bool): If `True` (default) the index DataFrame index
+            (`df.index`) is used to add labels to each of the plots; `False`
+            suppresses these labels. If a string is provided, the corresponding
+            column/variable of the DataFrame is used to label the plots.
         ax (None or matplotlib.axes._axes.Axes): If None, a new figure is
             initialized. Else the existing axis is taken, manipulated, and populated.
         ncol (None or int): If none, a (near) quadratic grid will be created. Can e
@@ -28,6 +32,8 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
         color (None, list): If `None` N colors from the qualitative
             palette 'Dynamic' (`colorspace.qualitative_hcl("Dynamic")`) will
             be used. Can be a list of valid colors/hex colors.
+        numeric_only (bool): Defaults to `False`, if set `True` all non-numeric
+            columns/variables will be excluded.
         **kwargs:
             Additional keyword arguments, see Details for more information.
 
@@ -66,28 +72,15 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
 
     from pandas import DataFrame
     from matplotlib import axes
-
-    if "title" in kwargs:
-        if not isinstance(kwargs["title"], str):
-            raise TypeError("**kwarg 'title' must be str")
-    title = "Awesome stars plot" if not "title" in kwargs else kwargs["title"]
-
-    if "angle" in kwargs:
-        if not isinstance(kwargs["angle"], (int, float)):
-            raise TypeError("**kwarg 'angle' must be str")
-    angle = 0 if not "angle" in kwargs else kwargs["angle"]
-
-    # Default radius used for scaling. 0.5 means that the segments of
-    # neighboring radar charts would touch (if x == 1); so we use
-    # something < 0.5 to allow all segments to have enough space to 
-    # be plotted, at least if the data are scaled (x in [0, 1]).
-    radius = 0.4
+    from .utils import prepare_num_df
 
     # -----------------------------------------------------------------
     # Sanity checks
     # -----------------------------------------------------------------
     if not isinstance(df, DataFrame):
         raise TypeError("argument 'df' must be a pandas.DataFrame")
+    if not isinstance(labels, (bool, str)):
+        raise TypeError("argument 'labels' must be bool, or str")
     if not isinstance(ax, (axes._axes.Axes, type(None))):
         raise TypeError("argument 'ax' must be None or matplotlib.axes._axes.Axes")
     if not isinstance(scale, bool):
@@ -100,6 +93,8 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
         raise TypeError("argument 'legend_position' must be None, bool, or a tuple")
     if not isinstance(color, (type(None), list)):
         raise TypeError("argument 'color' must be None or list")
+    if not isinstance(numeric_only, bool):
+        raise TypeError("argument 'numeric_only' must be bool")
     if legend_position is None: legend_position = True
 
     # Value checks
@@ -116,12 +111,35 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
         color = qualitative_hcl("Dynamic")(df.shape[1])
 
     # -----------------------------------------------------------------
+    # Evaluating some kwargs
+    # -----------------------------------------------------------------
+    if "title" in kwargs:
+        if not isinstance(kwargs["title"], str):
+            raise TypeError("**kwarg 'title' must be str")
+    title = "Awesome stars plot" if not "title" in kwargs else kwargs["title"]
+
+    if "angle" in kwargs:
+        if not isinstance(kwargs["angle"], (int, float)):
+            raise TypeError("**kwarg 'angle' must be str")
+    angle = 0 if not "angle" in kwargs else kwargs["angle"]
+
+
+    # Default radius used for scaling. 0.5 means that the segments of
+    # neighboring radar charts would touch (if x == 1); so we use
+    # something < 0.5 to allow all segments to have enough space to 
+    # be plotted, at least if the data are scaled (x in [0, 1]).
+    radius = 0.4
+
+    # -----------------------------------------------------------------
     # Preparing data
     # -----------------------------------------------------------------
-    # TODO(R): Currently not checking that we have an all-numeric
-    # DataFrame; and not yet implemented the feature where I can tell
-    # which column is my 'index column' (in case it is in the DataFrame
-    # and not already on the index).
+
+    # Return logical True/False if labels should be drawn later, and the modified
+    # data set if everything goes well. Else prepare_data() will throw errors
+    # and hints.
+    labels, df = prepare_num_df(df, labels, numeric_only)
+
+    # Preparing the data frame
     df = df.astype(float)
     if scale:
         from .utils import scale_df
@@ -220,34 +238,36 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
             if idx >= df.shape[0]: continue # Empty grid cell, continue
 
             ## Calculating polygons for segments as well as label positions
-            polygons, labels = calc_radar_coords(df.iloc[idx, :],
-                                                 center = (x, y),
-                                                 color  = color,
-                                                 radius = radius,
-                                                 xmax   = df_max,
-                                                 angle  = angle)
+            polygons, polylabels = calc_radar_coords(df.iloc[idx, :],
+                                                     center = (x, y),
+                                                     color  = color,
+                                                     radius = radius,
+                                                     xmax   = df_max,
+                                                     angle  = angle)
             ## Draw polygons
             for p in polygons.values(): ax.add_patch(p)
-            ## Adding label
-            ax.text(x, y + 0.5, df.index[idx], ha = "center",
-                    va = "bottom" if idx % 2 == 0 else "top")
+
+            ## Adding labels if requested. Suppressing labels
+            ## is not a common usecase but available as an option.
+            if labels:
+                ax.text(x, y + 0.5, df.index[idx], ha = "center",
+                        va = "bottom" if idx % 2 == 0 else "top")
 
             if circles:
                 # First we calculate what "useful" circles would be by
                 # checking the overall maximum of 'df' and then set up
                 # a vector with circles to draw; always on one digit
-                # after the decimal sign as the labels currently
+                # after the decimal sign as the polylabels currently
                 # use ".1f" (rounded to closest 0.1).
-                at_max = df.max().max()
                 from .utils import pretty_ticks
-                at     = pretty_ticks(at_max, 4)
-                polygons, labels = get_circle_coords(center = (x, y),
-                                                     radius = radius,
-                                                     at     = at,
-                                                     xmax   = df_max)
+                at     = pretty_ticks(df_max, 4)
+                polygons, polylabels = get_circle_coords(center = (x, y),
+                                                         radius = radius,
+                                                         at     = at,
+                                                         xmax   = df_max)
                 for k,p in polygons.items():
                     ax.add_patch(p)
-                    ax.text(x = labels[k][0], y = labels[k][1], s = k,
+                    ax.text(x = polylabels[k][0], y = polylabels[k][1], s = k,
                             ha = "center", va = "center", color = "gray",
                             fontsize = 6)
 
@@ -257,15 +277,15 @@ def radar(df, ax = None, ncol = None, scale = True, circles = True,
     if not legend_position is False:
         tmp = pd.Series(data = np.repeat(1.0, df.shape[1]),
                         index = df.columns, name = "legend")
-        polygons, labels = calc_radar_coords(tmp,
-                                             center = legend_position,
-                                             color  = color,
-                                             radius = 0.25,
-                                             xmax   = 1, # fixed size
-                                             angle  = angle)
+        polygons, polylabels = calc_radar_coords(tmp,
+                                                 center = legend_position,
+                                                 color  = color,
+                                                 radius = 0.25,
+                                                 xmax   = 1, # fixed size
+                                                 angle  = angle)
         for k in polygons.keys():
             ax.add_patch(polygons[k])
-            ax.text(x = labels[k][0], y = labels[k][1], s = k,
+            ax.text(x = polylabels[k][0], y = polylabels[k][1], s = k,
                     ha = "center", va = "center", fontsize = 7)
 
     # ---------------------------------------------------------------
@@ -393,7 +413,7 @@ def get_circle_coords(center, radius, at, xmax):
     anglerad = -45 / 180 * np.pi
 
     # Number of significant digits needed
-    digits = max(0, int((-np.log10(np.asarray(at))).max()))
+    digits = max(0, int((-np.floor(np.log10(np.asarray(at)))).max()))
 
     labels = dict()
     result = dict()

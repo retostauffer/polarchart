@@ -1,16 +1,47 @@
 #!/usr/bin/env python3
 
 import os, sys
-from polarchart import radar, load_mtcars
+from polarchart import radar, get_demodata
 import pandas as pd
 import matplotlib.pyplot as plt
 
-mtcars = load_mtcars()
-mtcars = mtcars.iloc[:4, :]
+############ Only num
+gsa3 = get_demodata("gsa3")
+
+#radar(gsa3, scale = True)
+#radar(gsa3, labels = 'ISO3', scale = True)
+radar(gsa3, labels = 'ISO3', numeric_only = True, scale = True)
 
 
-ice = pd.read_csv("Ice.csv")
-print(ice.head())
+sys.exit(" -- end of the gsa -- ")
+
+############ One char col
+gsa2 = get_demodata("gsa2")
+try:
+    # Expected to fail as we have non-numeric columns
+    radar(gsa2, scale = True)
+except:
+    pass
+radar(gsa2, labels = "Country", scale = True)
+
+############ Only num
+gsa = get_demodata("gsa")
+radar(gsa, labels = False, scale = True)
+radar(gsa, labels = True, scale = True)
+
+
+sys.exit(" -- end of the gsa -- ")
+
+
+#ice = pd.read_csv("Ice.csv")
+#ice["foo"] = list(ice.index)
+#print(ice)
+
+#radar(ice * 100, scale = False)
+radar(ice * 100, scale = True)
+
+sys.exit(" -- end of the ice -- ")
+
 
 radar(ice, scale = True,
       circles = False,
