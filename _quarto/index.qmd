@@ -12,12 +12,12 @@ for multivariate data analysis.
 An example:
 
 ```{python}
-from polarchart import load_mtcars, radar
+from polarchart import get_demodata, radar
 
 # Loading data set shipped with the package; pandas DataFrame
-mt = load_mtcars()
-mt.head(n = 2)
+gsa = get_demodata("gsa")
+gsa.head(n = 2)
 
 # Creating radar chart
-radar(mt, scale = True, title = "Demo figure", figsize = (10, 8))
+radar(gsa, scale = True, title = "Demo figure", figsize = (10, 8))
 ```
