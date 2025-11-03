@@ -212,19 +212,56 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <p><em>polarchart</em> is a Python package which allows to easily create a series of polar charts including radar charts (radar plots), star charts (star plots), and spider charts (spider plots) for multivariate data analysis.</p>
 <p>An example:</p>
-<div id="44632d33" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> load_mtcars, radar</span>
+<div id="483d105d" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> get_demodata, radar</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading data set shipped with the package; pandas DataFrame</span></span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>mt <span class="op">=</span> load_mtcars()</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>mt.head(n <span class="op">=</span> <span class="dv">2</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>gsa <span class="op">=</span> get_demodata(<span class="st">"gsa"</span>)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>gsa.head(n <span class="op">=</span> <span class="dv">2</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating radar chart</span></span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>radar(mt, scale <span class="op">=</span> <span class="va">True</span>, title <span class="op">=</span> <span class="st">"Demo figure"</span>, figsize <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">8</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>radar(gsa, scale <span class="op">=</span> <span class="va">True</span>, title <span class="op">=</span> <span class="st">"Demo figure"</span>, figsize <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">8</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>                  SA01.tennis  SA02.cycle  SA03.ride  SA05.swim  SA17.shop  \
+Country                                                                      
+Austria (Vienna)     0.037961    0.187636   0.013015   0.414317   0.085683   
+Austria (other)      0.039891    0.199456   0.005440   0.389846   0.113327   
+Belgium              0.013433    0.100000   0.005970   0.317910   0.183582   
+Denmark              0.019194    0.080614   0.000000   0.374280   0.257198   
+France               0.018957    0.071090   0.001580   0.251185   0.156398   
+Germany              0.018039    0.155950   0.009892   0.330812   0.133838   
+Hungary              0.024719    0.159551   0.013483   0.485393   0.143820   
+Italy                0.028450    0.119488   0.007112   0.254623   0.197724   
+Netherlands          0.021763    0.147987   0.001088   0.341676   0.200218   
+Spain                0.004049    0.028340   0.000000   0.101215   0.226721   
+Sweden               0.012195    0.073171   0.002439   0.390244   0.175610   
+Switzerland          0.043478    0.161685   0.012228   0.361413   0.137228   
+UK                   0.011084    0.056650   0.002463   0.217980   0.253695   
+USA                  0.005976    0.035857   0.001992   0.135458   0.278884   
+other                0.012853    0.079692   0.000000   0.308483   0.231362   
+
+                  SA18.concert  SA19.sight  SA21.museum  
+Country                                                  
+Austria (Vienna)      0.016269    0.163774     0.057484  
+Austria (other)       0.025385    0.211242     0.067996  
+Belgium               0.044776    0.304478     0.086567  
+Denmark               0.026871    0.360845     0.078695  
+France                0.085308    0.421801     0.175355  
+Germany               0.027640    0.300262     0.083503  
+Hungary               0.015730    0.391011     0.159551  
+Italy                 0.054054    0.460882     0.254623  
+Netherlands           0.028292    0.304679     0.072905  
+Spain                 0.072874    0.813765     0.404858  
+Sweden                0.029268    0.365854     0.065854  
+Switzerland           0.031250    0.210598     0.051630  
+UK                    0.044335    0.427340     0.091133  
+USA                   0.091633    0.631474     0.270916  
+other                 0.056555    0.539846     0.228792  </code></pre>
+</div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="index_files/figure-html/cell-2-output-1.png" width="773" height="584" class="figure-img"></p>
+<p><img src="index_files/figure-html/cell-2-output-2.png" width="618" height="644" class="figure-img"></p>
 </figure>
 </div>
 </div>

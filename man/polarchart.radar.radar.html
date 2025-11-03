@@ -222,7 +222,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>WARNING(long_description missing)</p>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-python">radar(df, ax=None, ncol=None, scale=True,<br>      circles=True, legend_position=None,<br>      color=None, **kwargs)</code></pre>
+<pre><code class="language-python">radar(df, labels=True, ax=None, ncol=None,<br>      scale=True, circles=True,<br>      legend_position=None, color=None,<br>      numeric_only=False, **kwargs)</code></pre>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -232,6 +232,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </dt>
 <dd>
 A pandas DataFrame with numeric values. Must have an index as well as column mames (TODO).
+</dd>
+<dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
+<code id="polarchart.radar.radar:labels">labels</code><code class="argument-class">str, or bool</code>
+</dt>
+<dd>
+If <code>True</code> (default) the index DataFrame index (<code>df.index</code>) is used to add labels to each of the plots; <code>False</code> suppresses these labels. If a string is provided, the corresponding column/variable of the DataFrame is used to label the plots.
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
 <code id="polarchart.radar.radar:ax">ax</code><code class="argument-class">None or matplotlib.axes._axes.Axes</code>
@@ -270,6 +276,12 @@ If ‘None’ (or ‘True’) the legend is positioned automatically. A tuple ca
 If <code>None</code> N colors from the qualitative palette ‘Dynamic’ (<code>colorspace.qualitative_hcl("Dynamic")</code>) will be used. Can be a list of valid colors/hex colors.
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
+<code id="polarchart.radar.radar:numeric_only">numeric_only</code><code class="argument-class">bool</code>
+</dt>
+<dd>
+Defaults to <code>False</code>, if set <code>True</code> all non-numeric columns/variables will be excluded.
+</dd>
+<dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
 <code id="polarchart.radar.radar:**kwargs">**kwargs</code>
 </dt>
 <dd>
@@ -283,7 +295,7 @@ Additional keyword arguments, see Details for more information.
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
-<div id="975b6d4c" class="cell" data-execution_count="1">
+<div id="a1f0d28e" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> load_mtcars, radar</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>mt <span class="op">=</span> load_mtcars().iloc[<span class="dv">1</span>:<span class="dv">5</span>, ]</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(mt)</span>
@@ -298,25 +310,16 @@ Additional keyword arguments, see Details for more information.
 <span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      legend_position <span class="op">=</span> (<span class="fl">1.5</span>, <span class="dv">2</span>),</span>
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      color   <span class="op">=</span> diverging_hcl(<span class="st">"Green-Orange"</span>)(mt.shape[<span class="dv">1</span>]),</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      figsize <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">8</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                    mpg  cyl   disp   hp  drat     wt   qsec
-Mazda RX4 Wag      21.0    6  160.0  110  3.90  2.875  17.02
-Datsun 710         22.8    4  108.0   93  3.85  2.320  18.61
-Hornet 4 Drive     21.4    6  258.0  110  3.08  3.215  19.44
-Hornet Sportabout  18.7    8  360.0  175  3.15  3.440  17.02</code></pre>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="polarchart.radar.radar_files/figure-html/cell-2-output-2.png" width="466" height="350" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="polarchart.radar.radar_files/figure-html/cell-2-output-3.png" width="512" height="631" class="figure-img"></p>
-</figure>
+<div class="cell-output cell-output-error">
+<div class="ansi-escaped-output">
+<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
+<span class="ansi-red-fg">ImportError</span>                               Traceback (most recent call last)
+<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[1]</span><span class="ansi-green-fg">, line 1</span>
+<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">1</span> <span style="font-weight:bold;color:rgb(0,135,0)">from</span><span style="color:rgb(188,188,188)"> </span><span class="ansi-blue-fg ansi-bold">polarchart</span><span style="color:rgb(188,188,188)"> </span><span style="font-weight:bold;color:rgb(0,135,0)">import</span> load_mtcars, radar
+<span class="ansi-green-fg">      2</span> mt = load_mtcars().iloc[<span class="ansi-green-fg">1</span>:<span class="ansi-green-fg">5</span>, ]
+<span class="ansi-green-fg">      3</span> <span style="color:rgb(0,135,0)">print</span>(mt)
+
+<span class="ansi-red-fg">ImportError</span>: cannot import name 'load_mtcars' from 'polarchart' (/opt/hostedtoolcache/Python/3.11.14/x64/lib/python3.11/site-packages/polarchart/__init__.py)</pre>
 </div>
 </div>
 </div>
