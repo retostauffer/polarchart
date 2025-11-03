@@ -4,7 +4,7 @@
 # Cleaning up development environment
 .PHONY: clean
 clean:
-	-rm -rf dist *.egg-info */__pycache__
+	-rm -rf dist *.egg-info */__pycache__ _examples
 
 # Using python -m venv .venv to make be found by positron
 venv: requirements.txt
@@ -16,7 +16,7 @@ venv: requirements.txt
 # Create man pages (_quarto/man/*.qmd) by extracting docstrings
 # from python classes and functions. Requires pyp2qmd to be installed.
 # - https://github.com/retostauffer/pyp2qmd
-document:
+document: install
 	@echo "********* CREATE (OVERWRITE) QMD FILES ************"
 	pyp2qmd document --package polarchart
 
@@ -27,9 +27,8 @@ document:
 examples:
 	@echo "********* CREATE (EXAMPLES) QMD FILES *************"
 	rm -rf _examples
-	pyp2qmd examples --package colorspace
+	pyp2qmd examples --package polarchart
 	cd _examples && for file in *.qmd; do quarto render $$file || exit 99; done
-
 
 # Render documentation. Requires quarto to be installed as well
 # a series of python packages used in the documentation (see

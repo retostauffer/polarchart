@@ -27,8 +27,8 @@ and returned (pandas DataFrame).</dd>
 
 ```{python}
 #| echo: true
-#| error: true
 #| warning: true
+#| error: true
 
 ```
 

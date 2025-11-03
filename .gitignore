@@ -6,3 +6,6 @@ __pycache__
 /.venv
 /.vscode
 /build
+
+# Created by 'make examples' (run examples)
+/_examples
