@@ -1,0 +1,36 @@
+---
+title: "Return Demo Data"
+---
+
+### Description
+
+The package is shipped with one/few (TODO(R)) demo data
+sets used for the examples as well as the documentation.
+
+### Usage
+
+<pre><code class='language-python'>get_demodata(name)</code></pre>
+
+### Arguments
+
+<ul><li>WARNING(missing argument definition "name" in docstring)</li></ul><dl class="pyp-list param-list">
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.get_demodata.get_demodata:x">x</code>
+  </dt>
+ <dd>str or None
+If `None` a pandas DataFrame with all available data sets
+is returned. If string, the corresponding data set is loaded
+and returned (pandas DataFrame).</dd>
+</dl>
+
+### Examples
+
+```{python}
+#| echo: true
+#| error: true
+#| warning: true
+
+```
+
+
+

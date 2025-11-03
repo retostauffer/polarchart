@@ -20,8 +20,8 @@ website:
     collapse-level: 1
     contents:
     - contents:
-      - file: man/polarchart.mtcars.load_mtcars.qmd
-        text: load_mtcars
+      - file: man/polarchart.get_demodata.get_demodata.qmd
+        text: get_demodata
       - file: man/polarchart.radar.radar.qmd
         text: radar
       section: Function references
