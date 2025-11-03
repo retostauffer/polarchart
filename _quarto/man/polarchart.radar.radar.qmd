@@ -6,7 +6,7 @@ WARNING(long_description missing)
 
 ### Usage
 
-<pre><code class='language-python'>radar(df, labels=True, ax=None, ncol=None,<br/>      scale=True, circles=True,<br/>      legend_position=None, color=None,<br/>      numeric_only=False, **kwargs)</code></pre>
+<pre><code class='language-python'>radar(df, labels=True, ax=None, ncol=None,<br/>      scale=True, circles=True,<br/>      legend_position=None, color=None,<br/>      numeric_only=False, *args, **kwargs)</code></pre>
 
 ### Arguments
 
@@ -60,6 +60,11 @@ be used. Can be a list of valid colors/hex colors.</dd>
   </dt>
  <dd>Defaults to `False`, if set `True` all non-numeric
 columns/variables will be excluded.</dd>
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.radar.radar:*args">*args</code>
+  </dt>
+ <dd>Positional arguments; used by other functions interfacing this main
+function (`stars()`, ...).</dd>
   <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
    <code id="polarchart.radar.radar:**kwargs">**kwargs</code>
   </dt>
