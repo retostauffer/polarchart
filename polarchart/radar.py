@@ -29,9 +29,10 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
             manually position, where '(x, y)' corresponds to '(left, downwards)' with
             '(0, 0)' corresponding to the position of the first radar plot (top left
             one). If set 'False' the legend will not be drawn at all.
-        color (None, list): If `None` N colors from the qualitative
-            palette 'Dynamic' (`colorspace.qualitative_hcl("Dynamic")`) will
-            be used. Can be a list of valid colors/hex colors.
+        color (None, bool, list): If `None` (same as `True`) N colors from the
+            qualitative palette 'Dynamic' (`colorspace.qualitative_hcl("Dynamic")`)
+            will be used. Can be a list of valid colors/hex colors or `False` to
+            not fill the polygons (`radar()`, `stars()`).
         numeric_only (bool): Defaults to `False`, if set `True` all non-numeric
             columns/variables will be excluded.
         *args:
@@ -61,23 +62,25 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
         >>>
         >>> ## TODO(R): *.iloc[:,1:3] causes erro (only two columns fail?)
         >>>
-        >>> ## Default options
-        >>> radar(gsa.iloc[:,:3], title = "Default radar chart")
+        >>> ## Default options (first three rows, three columns)
+        >>> radar(gsa.iloc[:6,:3], title = "Default radar chart")
         >>>
         >>> ## Customized: No circles, custom legend position, colors, and figure size.
         >>> from colorspace import diverging_hcl
         >>>
-        >>> radar(gsa.iloc[:,:3],
+        >>> radar(gsa.iloc[:6,:3],
         >>>       title   = "Customized radar chart",
         >>>       circles = False,
         >>>       legend_position = (1.5, 2),
-        >>>       color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
+        >>>       color   = diverging_hcl("Green-Orange")(3),
         >>>       figsize = (12, 8))
         >>>
         >>> ## Available plot types
-        >>> radar(gsa,  title = "Default radar chart")
-        >>> stars(gsa,  title = "Default stars chart")
-        >>> spider(gsa, title = "Default spider chart")
+        >>> figsize = (12, 8)
+        >>> radar(gsa,  title = "Default radar chart",  figsize = figsize)
+        >>> stars(gsa,  title = "Default stars chart",  figsize = figsize)
+        >>> stars(gsa,  title = "Default stars chart",  figsize = figsize, color = False)
+        >>> spider(gsa, title = "Default spider chart", figsize = figsize)
     """
 
     from pandas import DataFrame
@@ -101,7 +104,7 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
         raise TypeError("argument 'circles' must be bool")
     if not isinstance(legend_position, (type(None), tuple, bool)):
         raise TypeError("argument 'legend_position' must be None, bool, or a tuple")
-    if not isinstance(color, (type(None), list)):
+    if not isinstance(color, (type(None), bool, list)):
         raise TypeError("argument 'color' must be None or list")
     if not isinstance(numeric_only, bool):
         raise TypeError("argument 'numeric_only' must be bool")
@@ -117,7 +120,7 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
             raise ValueError("elements in 'legend_position' must be numeric")
 
     # Set of colors
-    if color is None:
+    if color is None or color is True:
         color = qualitative_hcl("Dynamic")(df.shape[1])
 
     # -----------------------------------------------------------------
@@ -334,13 +337,14 @@ def get_patches(x, _type, center, color, radius, xmax, angle = 0,
             calculated.
         center (tuple): Tuple with two numeric values defining the center of
             the radar plot used for positioning.
-        color (list): List of valid colors used as facecolor of the segments.
-            radius (float): Radius of the segments, defaults to '0.43'. The
-            plotting function uses a "1 by 1" grid, i.e., two neighboring radar
-            plots are distanced by "1.0" on the x/y coordinates. 'radius = 0.43'
-            means that a segment where 'x = 1.0' will have a radius of '0.43' which
-            gives us enough space to draw the radar plots side-by-side without
-            overlap. If `x` is not scaled the picture looks different, though.
+        color (False, list): False suppresses color. A list of valid colors
+            used as facecolor of the segments. radius (float): Radius of the
+            segments, defaults to '0.43'. The plotting function uses a "1 by 1"
+            grid, i.e., two neighboring radar plots are distanced by "1.0" on the
+            x/y coordinates. 'radius = 0.43' means that a segment where 'x = 1.0'
+            will have a radius of '0.43' which gives us enough space to draw the
+            radar plots side-by-side without overlap. If `x` is not scaled the
+            picture looks different, though.
         xmax (num): Additional scaling factor. When plotting standardized data
             `xmax = 1.0` so that the max radius is equal to `radius`. All
             coordinates will be scaled with this factor.
@@ -393,7 +397,7 @@ def get_patches(x, _type, center, color, radius, xmax, angle = 0,
         # Setting up matplotlib.patches.Polygon
         result[x.index[i]] = Polygon(arc,
                                      closed = not _type == "spider",
-                                     facecolor = color[i],
+                                     facecolor = "none" if not color else color[i],
                                      edgecolor = edgecolor,
                                      linewidth = linewidth)
 
