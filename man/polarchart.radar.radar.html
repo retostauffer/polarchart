@@ -222,7 +222,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>WARNING(long_description missing)</p>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-python">radar(df, labels=True, ax=None, ncol=None,<br>      scale=True, circles=True,<br>      legend_position=None, color=None,<br>      numeric_only=False, **kwargs)</code></pre>
+<pre><code class="language-python">radar(df, labels=True, ax=None, ncol=None,<br>      scale=True, circles=True,<br>      legend_position=None, color=None,<br>      numeric_only=False, *args, **kwargs)</code></pre>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
@@ -282,6 +282,12 @@ If <code>None</code> N colors from the qualitative palette ‘Dynamic’ (<code>
 Defaults to <code>False</code>, if set <code>True</code> all non-numeric columns/variables will be excluded.
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
+<code id="polarchart.radar.radar:*args">*args</code>
+</dt>
+<dd>
+Positional arguments; used by other functions interfacing this main function (<code>stars()</code>, …).
+</dd>
+<dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
 <code id="polarchart.radar.radar:**kwargs">**kwargs</code>
 </dt>
 <dd>
@@ -295,7 +301,7 @@ Additional keyword arguments, see Details for more information.
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
-<div id="95ca5f4f" class="cell" data-execution_count="1">
+<div id="3864c0b2" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> get_demodata, radar</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>gsa <span class="op">=</span> get_demodata(<span class="st">"gsa"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(gsa.head())</span>
