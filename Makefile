@@ -34,9 +34,9 @@ examples:
 # a series of python packages used in the documentation (see
 # requirements_devel.txt; make venv).
 # - https://quarto.org/
-render:
+render: document
 	@echo "********* RENDERING QUARTO WEBSITE ****************"
-	(make document && cd _quarto && quarto render)
+	(cd _quarto && rm -rf _site && quarto render)
 
 install: setup.py
 	@echo "********* REMOVE AND REINSTALL PY PACKAGE (developer version) *********"

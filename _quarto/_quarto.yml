@@ -20,8 +20,12 @@ website:
     collapse-level: 1
     contents:
     - contents:
-      - file: man/polarchart.get_demodata.get_demodata.qmd
-        text: get_demodata
       - file: man/polarchart.radar.radar.qmd
         text: radar
+      - file: man/polarchart.plottypes.stars.qmd
+        text: stars
+      - file: man/polarchart.plottypes.spider.qmd
+        text: spider
+      - file: man/polarchart.get_demodata.get_demodata.qmd
+        text: get_demodata
       section: Function references

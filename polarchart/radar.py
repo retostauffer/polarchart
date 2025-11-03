@@ -54,23 +54,30 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
 
     Examples:
 
-        >>> from polarchart import get_demodata, radar
+        >>> from polarchart import get_demodata
+        >>> from polarchart import radar, stars, spider
         >>> gsa = get_demodata("gsa")
         >>> print(gsa.head())
         >>>
-        >>> ## Default options
-        >>> radar(gsa, title = "Default radar chart")
+        >>> ## TODO(R): *.iloc[:,1:3] causes erro (only two columns fail?)
         >>>
-        >>> ## Customized: No circles, custom legend position, colors,
-        >>> ##             and figure size.
+        >>> ## Default options
+        >>> radar(gsa.iloc[:,:3], title = "Default radar chart")
+        >>>
+        >>> ## Customized: No circles, custom legend position, colors, and figure size.
         >>> from colorspace import diverging_hcl
         >>>
-        >>> radar(gsa,
+        >>> radar(gsa.iloc[:,:3],
         >>>       title   = "Customized radar chart",
         >>>       circles = False,
         >>>       legend_position = (1.5, 2),
         >>>       color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
         >>>       figsize = (12, 8))
+        >>>
+        >>> ## Available plot types
+        >>> radar(gsa,  title = "Default radar chart")
+        >>> stars(gsa,  title = "Default stars chart")
+        >>> spider(gsa, title = "Default spider chart")
     """
 
     from pandas import DataFrame
@@ -149,8 +156,6 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
     # data set if everything goes well. Else prepare_data() will throw errors
     # and hints.
     labels, df = prepare_num_df(df, labels, numeric_only)
-
-    print(df)
 
     # Preparing the data frame
     df = df.astype(float)
@@ -356,14 +361,12 @@ def get_patches(x, _type, center, color, radius, xmax, angle = 0,
     anglerad = angle / 180 * np.pi
     ## Rough radius interval (the smaller the 'rounder')
     radi   = 2 * np.pi / 180
-    ## Zero coordinate point
-    zero   = np.array([0])
     ## Angles for the arc (radiant)
     theta  = np.linspace(0, -2 * np.pi, len(x) + 1) + anglerad
 
-    ## Middle of the theta segments, used for legend positioning
-    ## Used to place labels if '_type = "radar"'.
-    theta_mids = (theta[:-1] + theta[1:]) / 2.0
+    ## For '_type == "radar" we use the center of the two 
+    ## neighboring thetas, else theta
+    label_angle = (theta[:-1] + theta[1:]) / 2.0 if _type == "radar" else theta[:-1]
 
     ## Resulting dictionary
     result = dict()
@@ -371,29 +374,32 @@ def get_patches(x, _type, center, color, radius, xmax, angle = 0,
 
     ## Create Polygon for each of the segments
     for i in range(len(x)):
-        num = 2 if _type == "stars" else int(abs(theta[i + 1] - theta[i]) // radi)
+        num = int(abs(theta[i + 1] - theta[i]) // radi) if _type == "radar" else 2
         angle = np.hstack([np.linspace(theta[i], theta[i + 1], num)])
 
         # Calculate geometry of the polygon
-        if _type == "stars":
+        if _type == "radar":
+            poly_x = center[0] + x.iloc[i] * radius * np.cos(angle) / xmax
+            poly_y = center[1] + x.iloc[i] * radius * np.sin(angle) / xmax
+        else:
             ii = [i, i + 1] if i < (len(x) - 1) else [i, 0]
             poly_x = center[0] + x.iloc[ii] * radius * np.cos(angle) / xmax
             poly_y = center[1] + x.iloc[ii] * radius * np.sin(angle) / xmax
-        else:
-            poly_x = center[0] + x.iloc[i] * radius * np.cos(angle) / xmax
-            poly_y = center[1] + x.iloc[i] * radius * np.sin(angle) / xmax
 
-        arc   = np.vstack([center, np.column_stack([poly_x, poly_y])])
+        if _type == "radar" or _type == "stars":
+            arc   = np.vstack([center, np.column_stack([poly_x, poly_y])])
+        else:
+            arc   = np.column_stack([poly_x, poly_y])
         # Setting up matplotlib.patches.Polygon
         result[x.index[i]] = Polygon(arc,
-                                     closed = True,
+                                     closed = not _type == "spider",
                                      facecolor = color[i],
                                      edgecolor = edgecolor,
                                      linewidth = linewidth)
 
         # Calculating label position
-        labels[x.index[i]] = (center[0] + 1.4 * radius * np.cos(theta_mids[i]),
-                              center[1] + 1.4 * radius * np.sin(theta_mids[i]))
+        labels[x.index[i]] = (center[0] + 1.4 * radius * np.cos(label_angle[i]),
+                              center[1] + 1.4 * radius * np.sin(label_angle[i]))
 
     return result, labels
 

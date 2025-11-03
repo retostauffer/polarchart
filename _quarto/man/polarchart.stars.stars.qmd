@@ -1,0 +1,53 @@
+---
+title: "Create radar charts."
+---
+
+WARNING(long_description missing)
+
+### Usage
+
+<pre><code class='language-python'>stars(*args, **kwargs)</code></pre>
+
+### Arguments
+
+<dl class="pyp-list param-list">
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.stars.stars:*args">*args</code>
+  </dt>
+ <dd>Positional arguments, see `help(radar)` for details.</dd>
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.stars.stars:**kwargs">**kwargs</code>
+  </dt>
+ <dd>Additional keyword arguments, see `help(radar)` for details.</dd>
+</dl>
+
+### Return
+
+If `ax = None` (no custom axis provided) there is no return but
+the plot created will be shown. If a custom axis is used the
+(modified) axis is returned.
+
+### Examples
+
+```{python}
+#| echo: true
+#| warning: true
+#| error: true
+from polarchart import get_demodata, stars
+gsa = get_demodata("gsa")
+print(gsa.head())
+## Default options
+stars(gsa, title = "Default stars chart")
+## Customized: No circles, custom legend position, colors,
+##             and figure size.
+from colorspace import diverging_hcl
+stars(gsa,
+      title   = "Customized stars chart",
+      circles = False,
+      legend_position = (1.5, 2),
+      color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
+      figsize = (12, 8))
+```
+
+
+

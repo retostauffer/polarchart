@@ -1,5 +1,6 @@
 
 
 from .radar import radar
-from .stars import stars
+from .plottypes import stars
+from .plottypes import spider
 from .get_demodata import get_demodata
