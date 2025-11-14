@@ -37,6 +37,7 @@ def spineplot(df, x, y, *args, **kwargs):
     """
 
     from pandas import DataFrame, Index, cut
+    import numpy as np
     from matplotlib import axes
 
     # -----------------------------------------------------------------
@@ -54,10 +55,27 @@ def spineplot(df, x, y, *args, **kwargs):
     if not y in df.columns:
         raise ValueError(f"variable {y=} not found in 'df'")
 
+
     df = df[[x, y]]
     df.columns = Index(["x", "y"])
 
-    print(df)
+    # If x/y are integer, check if they are 'continuous'. If so,
+    # we handle them as integers. Else we use 'cut'.
+    def int_to_category(x):
+        print(x)
+        print(np.min(x))
+        print(np.max(x))
+        if np.issubdtype(type(x), int):
+            tmp = np.asarray([y for y in range(min(x), max(x) - 1)])
+            print(tmp)
+            if np.all(tmp == np.intersect1d(tmp, x)):
+                x = x.astype("category")
+        return x
+
+    df.loc[:, "x"] = int_to_category(df.x.values)
+    df.loc[:, "y"] = int_to_category(df.y.values)
+
+
     return df
 
 
