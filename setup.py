@@ -26,7 +26,7 @@ setuptools.setup(
         "Topic :: Scientific/Engineering :: Visualization"
     ],
 
-    install_requires = ["numpy>=2.3", "pandas>=2.3", "matplotlib>=3.10", "colorspace>=1.0"],
+    install_requires = ["numpy>=2.3", "pandas>=2.3", "matplotlib>=3.10", "colorspace>=1.0", "statsmodels>=0.14.5"],
     python_requires = ">=3.10",
 
     # Exclude on build
