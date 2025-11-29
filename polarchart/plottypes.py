@@ -45,15 +45,15 @@ ex = """
         >>> print(gsa.head())
 
         Default options (first three rows, three columns)
-        >>> stars(gsa.iloc[:6,:3], title = "Default stars chart")
+        >>> stars(gsa.iloc[:6,:], title = "Default stars chart")
 
         Customized: No circles, custom legend position, colors, and figure size.
         >>> from colorspace import diverging_hcl
-        >>> stars(gsa.iloc[:6,:3],
+        >>> stars(gsa.iloc[:6,:],
         >>>       title   = "Customized stars chart",
         >>>       circles = False,
         >>>       legend_position = (1.5, 2),
-        >>>       color   = diverging_hcl("Green-Orange")(3),
+        >>>       color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
         >>>       figsize = (12, 8))
 """
 @copy_doc(radar, ex)
@@ -70,16 +70,16 @@ ex = """
         >>> print(gsa.head())
 
         Default options (first three rows, three columns)
-        >>> spider(gsa.iloc[:6,:3], title = "Default spider chart")
+        >>> spider(gsa.iloc[:6,:], title = "Default spider chart")
 
         Customized: No circles, custom legend position, colors, and figure size.
         >>> from colorspace import diverging_hcl
         >>>
-        >>> spider(gsa.iloc[:6,:3],
+        >>> spider(gsa.iloc[:6,:],
         >>>        title   = "Customized spider chart",
         >>>        circles = False,
         >>>        legend_position = (1.5, 2),
-        >>>        color   = diverging_hcl("Green-Orange")(3),
+        >>>        color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
         >>>        figsize = (12, 8))
 """
 @copy_doc(radar, ex)

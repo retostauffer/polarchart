@@ -99,15 +99,15 @@ gsa = get_demodata("gsa")
 print(gsa.head())
 
 ## Default options (first three rows, three columns)
-spider(gsa.iloc[:6,:3], title = "Default spider chart")
+spider(gsa.iloc[:6,:], title = "Default spider chart")
 
 ## Customized: No circles, custom legend position, colors, and figure size.
 from colorspace import diverging_hcl
-spider(gsa.iloc[:6,:3],
+spider(gsa.iloc[:6,:],
        title   = "Customized spider chart",
        circles = False,
        legend_position = (1.5, 2),
-       color   = diverging_hcl("Green-Orange")(3),
+       color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
        figsize = (12, 8))
 ```
 

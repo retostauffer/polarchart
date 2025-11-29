@@ -30,6 +30,7 @@ and returned (pandas DataFrame).</dd>
 #| warning: true
 #| error: true
 ## Get a DataFrame with all available demo data sets
+from polarchart import get_demodata
 datasets = get_demodata(None)
 print(datasets)
 

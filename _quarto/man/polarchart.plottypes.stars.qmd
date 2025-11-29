@@ -99,15 +99,15 @@ gsa = get_demodata("gsa")
 print(gsa.head())
 
 ## Default options (first three rows, three columns)
-stars(gsa.iloc[:6,:3], title = "Default stars chart")
+stars(gsa.iloc[:6,:], title = "Default stars chart")
 
 ## Customized: No circles, custom legend position, colors, and figure size.
 from colorspace import diverging_hcl
-stars(gsa.iloc[:6,:3],
+stars(gsa.iloc[:6,:],
       title   = "Customized stars chart",
       circles = False,
       legend_position = (1.5, 2),
-      color   = diverging_hcl("Green-Orange")(3),
+      color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
       figsize = (12, 8))
 ```
 

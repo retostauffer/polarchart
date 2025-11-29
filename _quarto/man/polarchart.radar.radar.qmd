@@ -100,15 +100,15 @@ print(gsa.head())
 ## TODO(R): *.iloc[:,1:3] causes erro (only two columns fail?)
 
 ## Default options (first three rows, three columns)
-radar(gsa.iloc[:6,:3], title = "Default radar chart")
+radar(gsa.iloc[:6,:], title = "Default radar chart")
 
 ## Customized: No circles, custom legend position, colors, and figure size.
 from colorspace import diverging_hcl
-radar(gsa.iloc[:6,:3],
+radar(gsa.iloc[:6,:],
       title   = "Customized radar chart",
       circles = False,
       legend_position = (1.5, 2),
-      color   = diverging_hcl("Green-Orange")(3),
+      color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
       figsize = (12, 8))
 ```
 
