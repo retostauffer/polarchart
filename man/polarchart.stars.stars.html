@@ -184,6 +184,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">get_demodata</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../man/polarchart.spineplot.spineplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">spineplot</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -253,7 +259,7 @@ Additional keyword arguments, see <code>help(radar)</code> for details.
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
-<div id="60c05881" class="cell" data-execution_count="1">
+<div id="2cf8f484" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> get_demodata, stars</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>gsa <span class="op">=</span> get_demodata(<span class="st">"gsa"</span>)</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(gsa.head())</span>
@@ -269,26 +275,26 @@ Additional keyword arguments, see <code>help(radar)</code> for details.
 <span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      color   <span class="op">=</span> diverging_hcl(<span class="st">"Green-Orange"</span>)(gsa.shape[<span class="dv">1</span>]),</span>
 <span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      figsize <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">8</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                  SA01.tennis  SA02.cycle  SA03.ride  SA05.swim  SA17.shop  \
-Country                                                                      
-Austria (Vienna)     0.037961    0.187636   0.013015   0.414317   0.085683   
-Austria (other)      0.039891    0.199456   0.005440   0.389846   0.113327   
-Belgium              0.013433    0.100000   0.005970   0.317910   0.183582   
-Denmark              0.019194    0.080614   0.000000   0.374280   0.257198   
-France               0.018957    0.071090   0.001580   0.251185   0.156398   
+<pre><code>                    tennis     cycle      ride      swim      shop   concert  \
+Country                                                                        
+Austria (Vienna)  0.037961  0.187636  0.013015  0.414317  0.085683  0.016269   
+Austria (other)   0.039891  0.199456  0.005440  0.389846  0.113327  0.025385   
+Belgium           0.013433  0.100000  0.005970  0.317910  0.183582  0.044776   
+Denmark           0.019194  0.080614  0.000000  0.374280  0.257198  0.026871   
+France            0.018957  0.071090  0.001580  0.251185  0.156398  0.085308   
 
-                  SA18.concert  SA19.sight  SA21.museum  
-Country                                                  
-Austria (Vienna)      0.016269    0.163774     0.057484  
-Austria (other)       0.025385    0.211242     0.067996  
-Belgium               0.044776    0.304478     0.086567  
-Denmark               0.026871    0.360845     0.078695  
-France                0.085308    0.421801     0.175355  </code></pre>
+                     sight    museum  
+Country                               
+Austria (Vienna)  0.163774  0.057484  
+Austria (other)   0.211242  0.067996  
+Belgium           0.304478  0.086567  
+Denmark           0.360845  0.078695  
+France            0.421801  0.175355  </code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="polarchart.stars.stars_files/figure-html/cell-2-output-2.png" width="474" height="496" class="figure-img"></p>
+<p><img src="polarchart.stars.stars_files/figure-html/cell-2-output-2.png" width="463" height="496" class="figure-img"></p>
 </figure>
 </div>
 </div>

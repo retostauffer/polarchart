@@ -184,6 +184,12 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
  <span class="menu-text">get_demodata</span></a>
   </div>
 </li>
+          <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="../man/polarchart.spineplot.spineplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">spineplot</span></a>
+  </div>
+</li>
       </ul>
   </li>
     </ul>
@@ -307,7 +313,7 @@ Additional keyword arguments, see Details for more information.
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
-<div id="86de8ff1" class="cell" data-execution_count="1">
+<div id="0579956a" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> get_demodata</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> radar, stars, spider</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>gsa <span class="op">=</span> get_demodata(<span class="st">"gsa"</span>)</span>
@@ -330,21 +336,21 @@ Additional keyword arguments, see Details for more information.
 <span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>stars(gsa,  title <span class="op">=</span> <span class="st">"Default stars chart"</span>,  figsize <span class="op">=</span> figsize, color <span class="op">=</span> <span class="va">False</span>)</span>
 <span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>spider(gsa, title <span class="op">=</span> <span class="st">"Default spider chart"</span>, figsize <span class="op">=</span> figsize)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
-<pre><code>                  SA01.tennis  SA02.cycle  SA03.ride  SA05.swim  SA17.shop  \
-Country                                                                      
-Austria (Vienna)     0.037961    0.187636   0.013015   0.414317   0.085683   
-Austria (other)      0.039891    0.199456   0.005440   0.389846   0.113327   
-Belgium              0.013433    0.100000   0.005970   0.317910   0.183582   
-Denmark              0.019194    0.080614   0.000000   0.374280   0.257198   
-France               0.018957    0.071090   0.001580   0.251185   0.156398   
+<pre><code>                    tennis     cycle      ride      swim      shop   concert  \
+Country                                                                        
+Austria (Vienna)  0.037961  0.187636  0.013015  0.414317  0.085683  0.016269   
+Austria (other)   0.039891  0.199456  0.005440  0.389846  0.113327  0.025385   
+Belgium           0.013433  0.100000  0.005970  0.317910  0.183582  0.044776   
+Denmark           0.019194  0.080614  0.000000  0.374280  0.257198  0.026871   
+France            0.018957  0.071090  0.001580  0.251185  0.156398  0.085308   
 
-                  SA18.concert  SA19.sight  SA21.museum  
-Country                                                  
-Austria (Vienna)      0.016269    0.163774     0.057484  
-Austria (other)       0.025385    0.211242     0.067996  
-Belgium               0.044776    0.304478     0.086567  
-Denmark               0.026871    0.360845     0.078695  
-France                0.085308    0.421801     0.175355  </code></pre>
+                     sight    museum  
+Country                               
+Austria (Vienna)  0.163774  0.057484  
+Austria (other)   0.211242  0.067996  
+Belgium           0.304478  0.086567  
+Denmark           0.360845  0.078695  
+France            0.421801  0.175355  </code></pre>
 </div>
 <div class="cell-output cell-output-display">
 <div>
@@ -363,28 +369,28 @@ France                0.085308    0.421801     0.175355  </code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-4.png" width="920" height="499" class="figure-img"></p>
+<p><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-4.png" width="912" height="499" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-5.png" width="918" height="499" class="figure-img"></p>
+<p><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-5.png" width="912" height="499" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-6.png" width="918" height="499" class="figure-img"></p>
+<p><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-6.png" width="912" height="499" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-7.png" width="918" height="499" class="figure-img"></p>
+<p><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-7.png" width="912" height="499" class="figure-img"></p>
 </figure>
 </div>
 </div>

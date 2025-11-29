@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Create radar charts. – polarchart</title>
+<title>Create spine plot – polarchart</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -139,7 +139,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../man/polarchart.radar.radar.html">Function references</a></li><li class="breadcrumb-item"><a href="../man/polarchart.radar.radar.html">radar</a></li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../man/polarchart.radar.radar.html">Function references</a></li><li class="breadcrumb-item"><a href="../man/polarchart.spineplot.spineplot.html">spineplot</a></li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -162,7 +162,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <ul id="quarto-sidebar-section-1" class="collapse list-unstyled sidebar-section depth1 show">  
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/polarchart.radar.radar.html" class="sidebar-item-text sidebar-link active">
+  <a href="../man/polarchart.radar.radar.html" class="sidebar-item-text sidebar-link">
  <span class="menu-text">radar</span></a>
   </div>
 </li>
@@ -186,7 +186,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/polarchart.spineplot.spineplot.html" class="sidebar-item-text sidebar-link">
+  <a href="../man/polarchart.spineplot.spineplot.html" class="sidebar-item-text sidebar-link active">
  <span class="menu-text">spineplot</span></a>
   </div>
 </li>
@@ -212,9 +212,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
-<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../man/polarchart.radar.radar.html">Function references</a></li><li class="breadcrumb-item"><a href="../man/polarchart.radar.radar.html">radar</a></li></ol></nav>
+<header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../man/polarchart.radar.radar.html">Function references</a></li><li class="breadcrumb-item"><a href="../man/polarchart.spineplot.spineplot.html">spineplot</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Create radar charts.</h1>
+<h1 class="title">Create spine plot</h1>
 </div>
 
 
@@ -234,73 +234,55 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <p>WARNING(long_description missing)</p>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
-<pre><code class="language-python">radar(df, labels=True, ax=None, ncol=None,<br>      scale=True, circles=True,<br>      legend_position=None, color=None,<br>      numeric_only=False, *args, **kwargs)</code></pre>
+<pre><code class="language-python">spineplot(df, x, y, labels=None, ax=None,<br>          colors=None, *args, **kwargs)</code></pre>
 </section>
 <section id="arguments" class="level3">
 <h3 class="anchored" data-anchor-id="arguments">Arguments</h3>
 <dl class="pyp-list param-list">
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
-<code id="polarchart.radar.radar:df">df</code><code class="argument-class">pandas.core.frame.DataFrame</code>
+<code id="polarchart.spineplot.spineplot:df">df</code><code class="argument-class">pandas.core.frame.DataFrame</code>
 </dt>
 <dd>
-A pandas DataFrame with numeric values. Must have an index as well as column mames (TODO).
+A pandas DataFrame.
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
-<code id="polarchart.radar.radar:labels">labels</code><code class="argument-class">str, or bool</code>
+<code id="polarchart.spineplot.spineplot:x">x</code><code class="argument-class">str</code>
 </dt>
 <dd>
-If <code>True</code> (default) the index DataFrame index (<code>df.index</code>) is used to add labels to each of the plots; <code>False</code> suppresses these labels. If a string is provided, the corresponding column/variable of the DataFrame is used to label the plots.
+Name of the variable for the first dimension.
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
-<code id="polarchart.radar.radar:ax">ax</code><code class="argument-class">None or matplotlib.axes._axes.Axes</code>
+<code id="polarchart.spineplot.spineplot:y">y</code><code class="argument-class">str</code>
+</dt>
+<dd>
+Name of the variable for the second dimension. Must be categorical or easily convertable to categorical (i.e., strings or integers with less than 10 unique values).
+</dd>
+<dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
+<code id="polarchart.spineplot.spineplot:labels">labels</code><code class="argument-class">None, str</code>
+</dt>
+<dd>
+Either <code>None</code> (default) to suppress labels, or one of <code>"absolute"</code>, <code>"relative"</code>, <code>"percent"</code>.
+</dd>
+<dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
+<code id="polarchart.spineplot.spineplot:ax">ax</code><code class="argument-class">None or matplotlib.axes._axes.Axes</code>
 </dt>
 <dd>
 If None, a new figure is initialized. Else the existing axis is taken, manipulated, and populated.
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
-<code id="polarchart.radar.radar:ncol">ncol</code><code class="argument-class">None or int</code>
+<code id="polarchart.spineplot.spineplot:colors">colors</code><code class="argument-class">None or list</code>
 </dt>
 <dd>
-If none, a (near) quadratic grid will be created. Can e specified by the user to adjust the gridding.
+If <code>None</code> (default) a series of grayscale colors is used. Can be a list of colors which must match the number of categories in y.
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
-<code id="polarchart.radar.radar:scale">scale</code><code class="argument-class">bool</code>
-</dt>
-<dd>
-Should the data in ‘df’ be scaled?
-</dd>
-<dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
-<code id="polarchart.radar.radar:circles">circles</code><code class="argument-class">bool</code>
-</dt>
-<dd>
-If True, circles are drawn on top of the radar charts.
-</dd>
-<dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
-<code id="polarchart.radar.radar:legend_position">legend_position</code><code class="argument-class">None, bool, or tuple</code>
-</dt>
-<dd>
-If ‘None’ (or ‘True’) the legend is positioned automatically. A tuple can be provided (x/y coordinates) to manually position, where ‘(x, y)’ corresponds to ‘(left, downwards)’ with ‘(0, 0)’ corresponding to the position of the first radar plot (top left one). If set ‘False’ the legend will not be drawn at all.
-</dd>
-<dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
-<code id="polarchart.radar.radar:color">color</code><code class="argument-class">None, bool, list</code>
-</dt>
-<dd>
-If <code>None</code> (same as <code>True</code>) N colors from the qualitative palette ‘Dynamic’ (<code>colorspace.qualitative_hcl("Dynamic")</code>) will be used. Can be a list of valid colors/hex colors or <code>False</code> to not fill the polygons (<code>radar()</code>, <code>stars()</code>).
-</dd>
-<dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
-<code id="polarchart.radar.radar:numeric_only">numeric_only</code><code class="argument-class">bool</code>
-</dt>
-<dd>
-Defaults to <code>False</code>, if set <code>True</code> all non-numeric columns/variables will be excluded.
-</dd>
-<dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
-<code id="polarchart.radar.radar:*args">*args</code>
+<code id="polarchart.spineplot.spineplot:*args">*args</code>
 </dt>
 <dd>
 Positional arguments; used by other functions interfacing this main function (<code>stars()</code>, …).
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
-<code id="polarchart.radar.radar:**kwargs">**kwargs</code>
+<code id="polarchart.spineplot.spineplot:**kwargs">**kwargs</code>
 </dt>
 <dd>
 Additional keyword arguments, see Details for more information.
@@ -309,88 +291,60 @@ Additional keyword arguments, see Details for more information.
 </section>
 <section id="return" class="level3">
 <h3 class="anchored" data-anchor-id="return">Return</h3>
-<p>If <code>ax = None</code> (no custom axis provided) there is no return but the plot created will be shown. If a custom axis is used the (modified) axis is returned.</p>
+<p>If <code>ax = None</code> (no custom axis provided) a list of length two is returned with (i) the data frame with the categorical variables used to calculate the spine plot as well as the cross-table the plot is based on. If a custom axis was provided, the modified axis is returned.</p>
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
-<div id="0579956a" class="cell" data-execution_count="2">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> get_demodata</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> radar, stars, spider</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>gsa <span class="op">=</span> get_demodata(<span class="st">"gsa"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(gsa.head())</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">## </span><span class="al">TODO</span><span class="co">(R): *.iloc[:,1:3] causes erro (only two columns fail?)</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Default options (first three rows, three columns)</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>radar(gsa.iloc[:<span class="dv">6</span>,:<span class="dv">3</span>], title <span class="op">=</span> <span class="st">"Default radar chart"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">## Customized: No circles, custom legend position, colors, and figure size.</span></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> colorspace <span class="im">import</span> diverging_hcl</span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>radar(gsa.iloc[:<span class="dv">6</span>,:<span class="dv">3</span>],</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>      title   <span class="op">=</span> <span class="st">"Customized radar chart"</span>,</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>      circles <span class="op">=</span> <span class="va">False</span>,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>      legend_position <span class="op">=</span> (<span class="fl">1.5</span>, <span class="dv">2</span>),</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>      color   <span class="op">=</span> diverging_hcl(<span class="st">"Green-Orange"</span>)(<span class="dv">3</span>),</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>      figsize <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">8</span>))</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">## Available plot types</span></span>
-<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>figsize <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">8</span>)</span>
-<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>radar(gsa,  title <span class="op">=</span> <span class="st">"Default radar chart"</span>,  figsize <span class="op">=</span> figsize)</span>
-<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>stars(gsa,  title <span class="op">=</span> <span class="st">"Default stars chart"</span>,  figsize <span class="op">=</span> figsize)</span>
-<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>stars(gsa,  title <span class="op">=</span> <span class="st">"Default stars chart"</span>,  figsize <span class="op">=</span> figsize, color <span class="op">=</span> <span class="va">False</span>)</span>
-<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>spider(gsa, title <span class="op">=</span> <span class="st">"Default spider chart"</span>, figsize <span class="op">=</span> figsize)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-stdout">
-<pre><code>                    tennis     cycle      ride      swim      shop   concert  \
-Country                                                                        
-Austria (Vienna)  0.037961  0.187636  0.013015  0.414317  0.085683  0.016269   
-Austria (other)   0.039891  0.199456  0.005440  0.389846  0.113327  0.025385   
-Belgium           0.013433  0.100000  0.005970  0.317910  0.183582  0.044776   
-Denmark           0.019194  0.080614  0.000000  0.374280  0.257198  0.026871   
-France            0.018957  0.071090  0.001580  0.251185  0.156398  0.085308   
-
-                     sight    museum  
-Country                               
-Austria (Vienna)  0.163774  0.057484  
-Austria (other)   0.211242  0.067996  
-Belgium           0.304478  0.086567  
-Denmark           0.360845  0.078695  
-France            0.421801  0.175355  </code></pre>
-</div>
+<div id="220e8805" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpy <span class="im">import</span> repeat</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pandas <span class="im">import</span> DataFrame, Series</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> spineplot</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Treatment and improvement of patients with rheumatoid arthritis</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>treatment <span class="op">=</span> Series(repeat([<span class="dv">1</span>, <span class="dv">2</span>], [<span class="dv">43</span>, <span class="dv">41</span>])).<span class="bu">map</span>({<span class="dv">1</span>: <span class="st">"placebo"</span>, <span class="dv">2</span>: <span class="st">"treated"</span>}) </span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>improved  <span class="op">=</span> Series(repeat([<span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>], [<span class="dv">29</span>, <span class="dv">7</span>, <span class="dv">7</span>, <span class="dv">13</span>, <span class="dv">7</span>, <span class="dv">21</span>])).<span class="bu">map</span>({<span class="dv">1</span>: <span class="st">"none"</span>, <span class="dv">2</span>: <span class="st">"some"</span>, <span class="dv">3</span>: <span class="st">"marked"</span>})</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> DataFrame({<span class="st">"treatment"</span>: treatment, <span class="st">"improved"</span>: improved})</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co">## Convert to categorial data and manually re-order the levels</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>df.improved <span class="op">=</span> df.improved.astype(<span class="st">"category"</span>)</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>df.improved <span class="op">=</span> df.improved.cat.reorder_categories([<span class="st">"marked"</span>, <span class="st">"some"</span>, <span class="st">"none"</span>])</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>spineplot(df, x <span class="op">=</span> <span class="st">"treatment"</span>, y <span class="op">=</span> <span class="st">"improved"</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>          title <span class="op">=</span> <span class="st">"Rheumatoid arthritis treatment"</span>)</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a><span class="co">## NASA space shuttle o-ring failures</span></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>fail <span class="op">=</span> Series([<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>               <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>])</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a>fail <span class="op">=</span> fail.<span class="bu">map</span>({<span class="dv">1</span>: <span class="st">"no"</span>, <span class="dv">2</span>: <span class="st">"yes"</span>})</span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>temperature <span class="op">=</span> [<span class="dv">53</span>, <span class="dv">57</span>, <span class="dv">58</span>, <span class="dv">63</span>, <span class="dv">66</span>, <span class="dv">67</span>, <span class="dv">67</span>, <span class="dv">67</span>, <span class="dv">68</span>, <span class="dv">69</span>, <span class="dv">70</span>, <span class="dv">70</span>,</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>               <span class="dv">70</span>, <span class="dv">70</span>, <span class="dv">72</span>, <span class="dv">73</span>, <span class="dv">75</span>, <span class="dv">75</span>, <span class="dv">76</span>, <span class="dv">76</span>, <span class="dv">78</span>, <span class="dv">79</span>, <span class="dv">81</span>]</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>df   <span class="op">=</span> DataFrame({<span class="st">"fail"</span>: Series(fail).astype(<span class="st">"category"</span>),</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"temperature"</span>: temperature})</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>df.fail <span class="op">=</span> df.fail.cat.reorder_categories([<span class="st">"yes"</span>, <span class="st">"no"</span>])</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>spineplot(df, <span class="st">"temperature"</span>, <span class="st">"fail"</span>, figsize <span class="op">=</span> (<span class="dv">7</span>, <span class="dv">3</span>))</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co">## Custom figure/axis and customized spine plot</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots(figsize <span class="op">=</span> (<span class="dv">7</span>, <span class="dv">3</span>))</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>spineplot(df, x <span class="op">=</span> <span class="st">"temperature"</span>, y <span class="op">=</span> <span class="st">"fail"</span>, ax <span class="op">=</span> ax,</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>          title <span class="op">=</span> <span class="st">"NASA space shuttle o-ring failures"</span>,</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>          colors <span class="op">=</span> [<span class="st">"#21CCAD"</span>, <span class="st">"#F99BAE"</span>])</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="polarchart.radar.radar_files/figure-html/cell-2-output-2.png" width="463" height="483" class="figure-img"></p>
+<p><img src="polarchart.spineplot.spineplot_files/figure-html/cell-2-output-1.png" width="525" height="505" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="polarchart.radar.radar_files/figure-html/cell-2-output-3.png" width="611" height="631" class="figure-img"></p>
+<p><img src="polarchart.spineplot.spineplot_files/figure-html/cell-2-output-2.png" width="591" height="268" class="figure-img"></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="polarchart.radar.radar_files/figure-html/cell-2-output-4.png" width="912" height="499" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="polarchart.radar.radar_files/figure-html/cell-2-output-5.png" width="912" height="499" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="polarchart.radar.radar_files/figure-html/cell-2-output-6.png" width="912" height="499" class="figure-img"></p>
-</figure>
-</div>
-</div>
-<div class="cell-output cell-output-display">
-<div>
-<figure class="figure">
-<p><img src="polarchart.radar.radar_files/figure-html/cell-2-output-7.png" width="912" height="499" class="figure-img"></p>
+<p><img src="polarchart.spineplot.spineplot_files/figure-html/cell-2-output-3.png" width="591" height="283" class="figure-img"></p>
 </figure>
 </div>
 </div>
