@@ -28,4 +28,6 @@ website:
         text: spider
       - file: man/polarchart.get_demodata.get_demodata.qmd
         text: get_demodata
+      - file: man/polarchart.spineplot.spineplot.qmd
+        text: spineplot
       section: Function references
