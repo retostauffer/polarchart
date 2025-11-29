@@ -23,6 +23,7 @@ def get_demodata(name):
     Examples:
 
         Get a DataFrame with all available demo data sets
+        >>> from polarchart import get_demodata
         >>> datasets = get_demodata(None)
         >>> print(datasets)
 
