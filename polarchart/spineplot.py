@@ -88,6 +88,8 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
     import numpy as np
     from matplotlib import axes
 
+    from .utils import required_digits
+
     # -----------------------------------------------------------------
     # Sanity checks
     # -----------------------------------------------------------------
@@ -173,16 +175,18 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
 
     # I updating axis
     if x_bins is not None:
+        digits = required_digits(x_bins)
         at = np.concatenate([np.asarray([0]), tab.apply("sum", 1).cumsum().to_numpy()])
         at = at / np.max(at)
         ax.set_xticks(at)
-        ax.set_xticklabels([f"{x:.2f}" for x in x_bins])
+        ax.set_xticklabels([f"{x:.{digits}f}" for x in x_bins])
 
     if y_bins is not None:
+        digits = required_digits(y_bins)
         at = np.concatenate([np.asarray([0]), tab.apply("sum", 0).cumsum().to_numpy()])
         at = at / np.max(at)
         ax.set_yticks(at)
-        ax.set_yticklabels([f"{x:.2f}" for x in y_bins])
+        ax.set_yticklabels([f"{x:.{digits}f}" for x in y_bins])
 
     # Adding title if requested
     if "title" in kwargs: ax.set_title(kwargs["title"])
@@ -206,6 +210,7 @@ def Sturges(x):
         x (pandas.core.series.Series): The data, must be
             a subtype of int or float (numeric).
     """
+    from .utils import pretty_ticks
 
     if not isinstance(x, pd.core.series.Series):
         raise TypeError("argument 'x' must be a pandas.core.series.Series")
@@ -213,7 +218,7 @@ def Sturges(x):
         raise TypeError("data on 'x' must be numeric (integers or floats)")
 
     n = int(np.ceil(np.log2(len(x)) + 1))
-    return np.linspace(start = np.min(x), stop = np.max(x), num = n)
+    return pretty_ticks(n, np.min(x), np.max(x))
 
 
 # -------------------------------------------------------------------

@@ -27,14 +27,13 @@ def scale_df(df):
     return df
 
 
-def pretty_ticks(xmax, n_ticks=4):
+def pretty_ticks(n, min_, max_):
     """Calculate Pretty Ticks
 
     Args:
-        xmax : num
-            Positive numeric value.
-        n_ticks : int
-            Approximate number of ticks to be calculated.
+        n (int): Approximate number of ticks.
+        min_ (float, int): Lowest value.
+        max_ (float, int): Highest value.
 
     Returns:
         list : List of numeric values with pretty ticks
@@ -42,40 +41,8 @@ def pretty_ticks(xmax, n_ticks=4):
         to about `xmax` (but not above).
 
     """
-    if xmax <= 0: return [0.0]
-
-    # Rough step size
-    raw_step = xmax / n_ticks
-    exp      = np.floor(np.log10(raw_step))
-    base     = 10 ** exp
-
-    # Pick "nice" step SMALLER than raw_step if needed
-    nice_multipliers = [1, 2, 2.5, 5, 10]
-    for m in nice_multipliers:
-        step = m * base
-        if step >= raw_step:
-            break
-
-    # If too few ticks, go one step smaller
-    if (xmax / step) < (n_ticks - 1):
-        # find smaller step in the list
-        idx = nice_multipliers.index(m)
-        if idx > 0:
-            step = nice_multipliers[idx - 1] * base / (10 if m == 1 else 1)
-
-    # Build ticks from 0 up to nearest multiple of step <= xmax
-    ticks = []
-    val   = step
-    while val <= xmax + 1e-10:
-        ticks.append(val)
-        val += step
-
-    # Rounding to match base precision
-    decimals = max(0, -int(np.floor(np.log10(step))) )
-    ticks    = [float(np.round(t, decimals)) for t in ticks]
-
-    return ticks
-
+    from matplotlib.ticker import MaxNLocator
+    return MaxNLocator(nbins = n).tick_values(min_, max_)
 
 
 def prepare_num_df(x, labels = True, numeric_only = False):
@@ -140,7 +107,6 @@ def prepare_num_df(x, labels = True, numeric_only = False):
         raise Exception(msg)
     elif numeric_only:
         # There will be nothing left after subsetting as all is non-numeric? Well ...
-        print(isnum)
         if not isnum.any():
             raise Exception("No numeric columns/variables found in the DataFrame")
 
@@ -152,4 +118,22 @@ def prepare_num_df(x, labels = True, numeric_only = False):
     labels = True if isinstance(labels, str) else labels
     return labels, x
 
+
+def required_digits(x):
+    from re import compile
+    from numpy import asarray
+
+    if isinstance(x, (int, float)): x = [x]
+    x = asarray(x)
+
+    # Number of digits
+    pat = compile("\\.([0-9]+)$")
+    def fn(k):
+        k = pat.search(k)
+        return 0 if not k else len(k.group(1))
+
+    res = np.zeros(len(x))
+    for i in range(len(x)):
+        res[i] = fn(format(x[i], "g"))
+    return int(max(res))
 

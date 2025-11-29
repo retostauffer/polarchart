@@ -282,10 +282,10 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
                 # after the decimal sign as the polylabels currently
                 # use ".1f" (rounded to closest 0.1).
                 from .utils import pretty_ticks
-                at     = pretty_ticks(df_max, 4)
+                at = pretty_ticks(4, min_ = 0.0, max_ = df_max)[1:] # Removing zero
                 polygons, polylabels = get_circle_coords(center = (x, y),
                                                          radius = radius,
-                                                         at     = at,
+                                                         at     = list(at),
                                                          xmax   = df_max)
                 for k,p in polygons.items():
                     ax.add_patch(p)
@@ -437,7 +437,8 @@ def get_circle_coords(center, radius, at, xmax):
     anglerad = -45 / 180 * np.pi
 
     # Number of significant digits needed
-    digits = max(0, int((-np.floor(np.log10(np.asarray(at)))).max()))
+    from .utils import required_digits
+    digits = required_digits(at)
 
     labels = dict()
     result = dict()

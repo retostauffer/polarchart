@@ -1,6 +1,8 @@
 execute:
-  cache: true
-  freeze: auto
+  cache: false
+  freeze: false
+  #cache: true
+  #freeze: auto
 format:
   html:
     theme:
