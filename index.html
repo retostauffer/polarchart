@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Creating radar charts, star charts, and spider charts in Python – polarchart</title>
+<title>Utility Package for the Data Analytics Course – polarchart</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -139,7 +139,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
       <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" role="button" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
         <i class="bi bi-layout-text-sidebar-reverse"></i>
       </button>
-        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Creating radar charts, star charts, and spider charts in Python</li></ol></nav>
+        <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item">Utility Package for the Data Analytics Course</li></ol></nav>
         <a class="flex-grow-1" role="navigation" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
         </a>
     </div>
@@ -180,14 +180,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./man/polarchart.get_demodata.get_demodata.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">get_demodata</span></a>
+  <a href="./man/polarchart.spineplot.spineplot.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">spineplot</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="./man/polarchart.spineplot.spineplot.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">spineplot</span></a>
+  <a href="./man/polarchart.get_demodata.get_demodata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">get_demodata</span></a>
   </div>
 </li>
       </ul>
@@ -197,15 +197,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </nav>
 <div id="quarto-sidebar-glass" class="quarto-sidebar-collapse-item" data-bs-toggle="collapse" data-bs-target=".quarto-sidebar-collapse-item"></div>
 <!-- margin-sidebar -->
-    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar zindex-bottom">
-        
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">On this page</h2>
+   
+  <ul>
+  <li><a href="#radar-starspider-plot-example" id="toc-radar-starspider-plot-example" class="nav-link active" data-scroll-target="#radar-starspider-plot-example">Radar (star/spider) plot example</a></li>
+  <li><a href="#spine-plot" id="toc-spine-plot" class="nav-link" data-scroll-target="#spine-plot">Spine plot</a></li>
+  </ul>
+</nav>
     </div>
 <!-- main -->
 <main class="content" id="quarto-document-content">
 
 <header id="title-block-header" class="quarto-title-block default">
 <div class="quarto-title">
-<h1 class="title">Creating radar charts, star charts, and spider charts in Python</h1>
+<h1 class="title">Utility Package for the Data Analytics Course</h1>
 </div>
 
 
@@ -222,16 +229,22 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p><em>polarchart</em> is a Python package which allows to easily create a series of polar charts including radar charts (radar plots), star charts (star plots), and spider charts (spider plots) for multivariate data analysis.</p>
-<p>An example:</p>
-<div id="76975f48" class="cell" data-execution_count="1">
+<p>A collection of helper functions designed to simplify common data analytics tasks so that students can focus on interpretation rather than implementation.</p>
+<p>This utility package was developed specifically for the <a href="https://discdown.org/dataanalytics/">Data Analytics</a> course taught at the <a href="https://uibk.ac.at">University of Innsbruck</a>. It contains a series of miscellaneous functions, including:</p>
+<ul>
+<li><strong><a href="./man/polarchart.radar.radar.html">radar</a>:</strong> A function for plotting segmented radar (star/spider) charts based on pandas DataFrames.</li>
+<li><strong><a href="./man/polarchart.spineplot.spineplot.html">spineplot</a>:</strong> A convenience function for drawing two-dimensional spine plots from pandas DataFrames.</li>
+</ul>
+<section id="radar-starspider-plot-example" class="level1">
+<h1>Radar (star/spider) plot example</h1>
+<div id="6d1fa15b" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> get_demodata, radar</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading data set shipped with the package; pandas DataFrame</span></span>
 <span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>gsa <span class="op">=</span> get_demodata(<span class="st">"gsa"</span>)</span>
 <span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>gsa.head(n <span class="op">=</span> <span class="dv">2</span>)</span>
 <span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co"># Creating radar chart</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="co">## Plotting</span></span>
 <span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>radar(gsa, scale <span class="op">=</span> <span class="va">True</span>, title <span class="op">=</span> <span class="st">"Demo figure"</span>, figsize <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">8</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
@@ -241,8 +254,37 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </div>
+</section>
+<section id="spine-plot" class="level1">
+<h1>Spine plot</h1>
+<div id="72ce8329" class="cell" data-execution_count="2">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pandas <span class="im">import</span> Series, DataFrame</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> spineplot</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>fail <span class="op">=</span> Series([<span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>               <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>, <span class="dv">1</span>])</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>fail <span class="op">=</span> fail.<span class="bu">map</span>({<span class="dv">1</span>: <span class="st">"no"</span>, <span class="dv">2</span>: <span class="st">"yes"</span>})</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a>temperature <span class="op">=</span> [<span class="dv">53</span>, <span class="dv">57</span>, <span class="dv">58</span>, <span class="dv">63</span>, <span class="dv">66</span>, <span class="dv">67</span>, <span class="dv">67</span>, <span class="dv">67</span>, <span class="dv">68</span>, <span class="dv">69</span>, <span class="dv">70</span>, <span class="dv">70</span>,</span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a>               <span class="dv">70</span>, <span class="dv">70</span>, <span class="dv">72</span>, <span class="dv">73</span>, <span class="dv">75</span>, <span class="dv">75</span>, <span class="dv">76</span>, <span class="dv">76</span>, <span class="dv">78</span>, <span class="dv">79</span>, <span class="dv">81</span>]</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">## Constructing pandas DataFrame</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>df   <span class="op">=</span> DataFrame({<span class="st">"fail"</span>: Series(fail).astype(<span class="st">"category"</span>),</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"temperature"</span>: temperature})</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>df.fail <span class="op">=</span> df.fail.cat.reorder_categories([<span class="st">"yes"</span>, <span class="st">"no"</span>])</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">## Plotting</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> spineplot(df, <span class="st">"temperature"</span>, <span class="st">"fail"</span>, figsize <span class="op">=</span> (<span class="dv">7</span>, <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><img src="index_files/figure-html/cell-3-output-1.png" width="581" height="268" class="figure-img"></p>
+</figure>
+</div>
+</div>
+</div>
 
 
+</section>
 
 </main> <!-- /main -->
 <script id="quarto-html-after-body" type="application/javascript">

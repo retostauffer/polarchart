@@ -7,7 +7,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
 
 
-<title>Create spine plot – polarchart</title>
+<title>Two-dimensional Spine Plots – polarchart</title>
 <style>
 code{white-space: pre-wrap;}
 span.smallcaps{font-variant: small-caps;}
@@ -180,14 +180,14 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/polarchart.get_demodata.get_demodata.html" class="sidebar-item-text sidebar-link">
- <span class="menu-text">get_demodata</span></a>
+  <a href="../man/polarchart.spineplot.spineplot.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">spineplot</span></a>
   </div>
 </li>
           <li class="sidebar-item">
   <div class="sidebar-item-container"> 
-  <a href="../man/polarchart.spineplot.spineplot.html" class="sidebar-item-text sidebar-link active">
- <span class="menu-text">spineplot</span></a>
+  <a href="../man/polarchart.get_demodata.get_demodata.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">get_demodata</span></a>
   </div>
 </li>
       </ul>
@@ -202,7 +202,8 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
     <h2 id="toc-title">On this page</h2>
    
   <ul>
-  <li><a href="#usage" id="toc-usage" class="nav-link active" data-scroll-target="#usage">Usage</a></li>
+  <li><a href="#description" id="toc-description" class="nav-link active" data-scroll-target="#description">Description</a></li>
+  <li><a href="#usage" id="toc-usage" class="nav-link" data-scroll-target="#usage">Usage</a></li>
   <li><a href="#arguments" id="toc-arguments" class="nav-link" data-scroll-target="#arguments">Arguments</a></li>
   <li><a href="#return" id="toc-return" class="nav-link" data-scroll-target="#return">Return</a></li>
   <li><a href="#examples" id="toc-examples" class="nav-link" data-scroll-target="#examples">Examples</a></li>
@@ -214,7 +215,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 
 <header id="title-block-header" class="quarto-title-block default"><nav class="quarto-page-breadcrumbs quarto-title-breadcrumbs d-none d-lg-block" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="../man/polarchart.radar.radar.html">Function references</a></li><li class="breadcrumb-item"><a href="../man/polarchart.spineplot.spineplot.html">spineplot</a></li></ol></nav>
 <div class="quarto-title">
-<h1 class="title">Create spine plot</h1>
+<h1 class="title">Two-dimensional Spine Plots</h1>
 </div>
 
 
@@ -231,7 +232,11 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </header>
 
 
-<p>WARNING(long_description missing)</p>
+<section id="description" class="level3">
+<h3 class="anchored" data-anchor-id="description">Description</h3>
+<p>Spine plots are a special cases of mosaic plots, and can be seen as a generalization of stacked (or highlighted) bar plots. Analogously, spinograms are an extension of histograms.</p>
+<p>This function utilizes <a href="https://www.statsmodels.org/stable/generated/statsmodels.graphics.mosaicplot.mosaic.html#statsmodels.graphics.mosaicplot.mosaic">mosaic</a> function from the Python package <a href="https://www.statsmodels.org">statsmodels</a> to easily create two-dimensional spine plots based on <a href="https://pandas.pydata.org/">pandas</a> DataFrames.</p>
+</section>
 <section id="usage" class="level3">
 <h3 class="anchored" data-anchor-id="usage">Usage</h3>
 <pre><code class="language-python">spineplot(df, x, y, labels=None, ax=None,<br>          colors=None, *args, **kwargs)</code></pre>
@@ -295,7 +300,7 @@ Additional keyword arguments, see Details for more information.
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
-<div id="e02384bf" class="cell" data-execution_count="1">
+<div id="9bad83bf" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpy <span class="im">import</span> repeat</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pandas <span class="im">import</span> DataFrame, Series</span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> spineplot</span>
