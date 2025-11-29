@@ -1,8 +1,8 @@
 execute:
-  cache: false
-  freeze: false
-  #cache: true
-  #freeze: auto
+  #cache: false
+  #freeze: false
+  cache: true
+  freeze: auto
 format:
   html:
     theme:
@@ -28,8 +28,8 @@ website:
         text: stars
       - file: man/polarchart.plottypes.spider.qmd
         text: spider
-      - file: man/polarchart.get_demodata.get_demodata.qmd
-        text: get_demodata
       - file: man/polarchart.spineplot.spineplot.qmd
         text: spineplot
+      - file: man/polarchart.get_demodata.get_demodata.qmd
+        text: get_demodata
       section: Function references

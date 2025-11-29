@@ -1,15 +1,22 @@
 ---
-title: Creating radar charts, star charts, and spider charts in Python
+title: Utility Package for the Data Analytics Course
 ---
 
 
-_polarchart_ is a Python package which allows to easily create
-a series of polar charts including radar charts (radar plots),
-star charts (star plots), and spider charts (spider plots)
-for multivariate data analysis.
+A collection of helper functions designed to simplify common data analytics
+tasks so that students can focus on interpretation rather than implementation.
 
+This utility package was developed specifically for the
+[Data Analytics](https://discdown.org/dataanalytics/) course taught
+at the [University of Innsbruck](https://uibk.ac.at). It contains a series of
+miscellaneous functions, including:
 
-An example:
+* **[radar](man/polarchart.radar.radar.qmd):** A function for plotting segmented
+  radar (star/spider) charts based on pandas DataFrames.
+* **[spineplot](man/polarchart.spineplot.spineplot.qmd):** A convenience
+  function for drawing two-dimensional spine plots from pandas DataFrames.
+
+# Radar (star/spider) plot example
 
 ```{python}
 from polarchart import get_demodata, radar
@@ -18,6 +25,27 @@ from polarchart import get_demodata, radar
 gsa = get_demodata("gsa")
 gsa.head(n = 2)
 
-# Creating radar chart
+## Plotting
 radar(gsa, scale = True, title = "Demo figure", figsize = (10, 8))
+```
+
+# Spine plot
+
+```{python}
+from pandas import Series, DataFrame
+from polarchart import spineplot
+
+fail = Series([2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 2, 1,
+               2, 1, 1, 1, 1, 2, 1, 1, 1, 1, 1])
+fail = fail.map({1: "no", 2: "yes"})
+temperature = [53, 57, 58, 63, 66, 67, 67, 67, 68, 69, 70, 70,
+               70, 70, 72, 73, 75, 75, 76, 76, 78, 79, 81]
+
+## Constructing pandas DataFrame
+df   = DataFrame({"fail": Series(fail).astype("category"),
+                  "temperature": temperature})
+df.fail = df.fail.cat.reorder_categories(["yes", "no"])
+
+## Plotting
+res = spineplot(df, "temperature", "fail", figsize = (7, 3))
 ```

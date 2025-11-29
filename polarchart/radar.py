@@ -7,7 +7,16 @@ from colorspace import qualitative_hcl
 
 def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = True,
           legend_position = None, color = None, numeric_only = False, *args, **kwargs):
-    """Create radar charts.
+    """Radar (Star/Spider) Plots and Segment Diagrams
+
+    Draw star plots or segment diagrams of a multivariate data set.
+    Besides the main function `radar()` additional convenience functions
+    (`stars`, `spider`) are available using different defaults for easy
+    access to the different visualization types.
+
+    See also [radar](polarchart.radar.radar.qmd),
+    [stars](polarchart.plottypes.stars.qmd), and
+    [spider](polarchart.plottypes.spider.qmd).
 
     Args:
         df (pandas.core.frame.DataFrame): A pandas DataFrame with numeric values.
@@ -61,26 +70,18 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
         >>> print(gsa.head())
         >>>
         >>> ## TODO(R): *.iloc[:,1:3] causes erro (only two columns fail?)
-        >>>
-        >>> ## Default options (first three rows, three columns)
+
+        Default options (first three rows, three columns)
         >>> radar(gsa.iloc[:6,:3], title = "Default radar chart")
-        >>>
-        >>> ## Customized: No circles, custom legend position, colors, and figure size.
+
+        Customized: No circles, custom legend position, colors, and figure size.
         >>> from colorspace import diverging_hcl
-        >>>
         >>> radar(gsa.iloc[:6,:3],
         >>>       title   = "Customized radar chart",
         >>>       circles = False,
         >>>       legend_position = (1.5, 2),
         >>>       color   = diverging_hcl("Green-Orange")(3),
         >>>       figsize = (12, 8))
-        >>>
-        >>> ## Available plot types
-        >>> figsize = (12, 8)
-        >>> radar(gsa,  title = "Default radar chart",  figsize = figsize)
-        >>> stars(gsa,  title = "Default stars chart",  figsize = figsize)
-        >>> stars(gsa,  title = "Default stars chart",  figsize = figsize, color = False)
-        >>> spider(gsa, title = "Default spider chart", figsize = figsize)
     """
 
     from pandas import DataFrame
@@ -460,6 +461,5 @@ def get_circle_coords(center, radius, at, xmax):
                         center[1] + a * radius * np.sin(anglerad) / xmax)
 
     return result, labels
-
 
 

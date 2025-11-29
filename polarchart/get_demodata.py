@@ -21,13 +21,14 @@ def get_demodata(name):
         the corresponding data set is loaded and returned.
 
     Examples:
-    >>> ## Get a DataFrame with all available demo data sets
-    >>> datasets = get_demodata(None)
-    >>> print(datasets)
-    >>>
-    >>> ## Load specific demo data set
-    >>> gsa = get_demodata("gsa")
-    >>> print(gsa)
+
+        Get a DataFrame with all available demo data sets
+        >>> datasets = get_demodata(None)
+        >>> print(datasets)
+
+        Load specific demo data set
+        >>> gsa = get_demodata("gsa")
+        >>> print(gsa)
     """
     from importlib.resources import files
     from pandas import read_csv, DataFrame

@@ -7,7 +7,16 @@ from statsmodels.graphics.mosaicplot import mosaic
 from matplotlib import colors as mcolors
 
 def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs):
-    """Create spine plot
+    """Two-dimensional Spine Plots
+
+    Spine plots are a special cases of mosaic plots, and can be seen as a
+    generalization of stacked (or highlighted) bar plots. Analogously,
+    spinograms are an extension of histograms.
+
+    This function utilizes [mosaic](https://www.statsmodels.org/stable/generated/statsmodels.graphics.mosaicplot.mosaic.html#statsmodels.graphics.mosaicplot.mosaic) function
+    from the Python package [statsmodels](https://www.statsmodels.org)
+    to easily create two-dimensional spine plots based on
+    [pandas](https://pandas.pydata.org/) DataFrames.
 
     Args:
         df (pandas.core.frame.DataFrame): A pandas DataFrame.

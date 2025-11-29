@@ -29,7 +29,13 @@ and returned (pandas DataFrame).</dd>
 #| echo: true
 #| warning: true
 #| error: true
+## Get a DataFrame with all available demo data sets
+datasets = get_demodata(None)
+print(datasets)
 
+## Load specific demo data set
+gsa = get_demodata("gsa")
+print(gsa)
 ```
 
 
