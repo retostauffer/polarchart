@@ -7,12 +7,12 @@ with open("README.md", "r", encoding="utf-8") as fh:
 
 setuptools.setup(
     name             = "polarchart",
-    version          = "0.0.1",
+    version          = "0.0.2",
     author           = "Reto Stauffer",
     author_email     = "Reto.Stauffer@uibk.ac.at",
     maintainer_email = "Reto.Stauffer@uibk.ac.at",
     license          = "GPL-2 | GPL-3",
-    description      = "Creating radar charts, star charts, and spider charts in Python",
+    description      = "Utility Package for the Data Analytics Course",
     long_description              = long_description,
     long_description_content_type = "text/markdown",
 
