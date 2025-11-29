@@ -257,26 +257,56 @@ str or None If <code>None</code> a pandas DataFrame with all available data sets
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
-<div id="ed062184" class="cell" data-execution_count="1">
+<div id="540b2be2" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co">## Get a DataFrame with all available demo data sets</span></span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>datasets <span class="op">=</span> get_demodata(<span class="va">None</span>)</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(datasets)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">## Load specific demo data set</span></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>gsa <span class="op">=</span> get_demodata(<span class="st">"gsa"</span>)</span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(gsa)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
-<div class="cell-output cell-output-error">
-<div class="ansi-escaped-output">
-<pre><span class="ansi-red-fg">---------------------------------------------------------------------------</span>
-<span class="ansi-red-fg">NameError</span>                                 Traceback (most recent call last)
-<span class="ansi-cyan-fg">Cell</span><span class="ansi-cyan-fg"> </span><span class="ansi-green-fg">In[1]</span><span class="ansi-green-fg">, line 2</span>
-<span class="ansi-green-fg">      1</span> <span style="font-style:italic;color:rgb(95,135,135)">## Get a DataFrame with all available demo data sets</span>
-<span class="ansi-green-fg">----&gt; </span><span class="ansi-green-fg">2</span> datasets = <span class="ansi-yellow-bg">get_demodata</span>(<span style="font-weight:bold;color:rgb(0,135,0)">None</span>)
-<span class="ansi-green-fg">      3</span> <span style="color:rgb(0,135,0)">print</span>(datasets)
-<span class="ansi-green-fg">      5</span> <span style="font-style:italic;color:rgb(95,135,135)">## Load specific demo data set</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> get_demodata</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>datasets <span class="op">=</span> get_demodata(<span class="va">None</span>)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(datasets)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Load specific demo data set</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>gsa <span class="op">=</span> get_demodata(<span class="st">"gsa"</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(gsa)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-stdout">
+<pre><code>     description
+gsa      TODO(R)
+gsa2     TODO(R)
+gsa3     TODO(R)
+gsa4     TODO(R)
+                    tennis     cycle      ride      swim      shop   concert  \
+Country                                                                        
+Austria (Vienna)  0.037961  0.187636  0.013015  0.414317  0.085683  0.016269   
+Austria (other)   0.039891  0.199456  0.005440  0.389846  0.113327  0.025385   
+Belgium           0.013433  0.100000  0.005970  0.317910  0.183582  0.044776   
+Denmark           0.019194  0.080614  0.000000  0.374280  0.257198  0.026871   
+France            0.018957  0.071090  0.001580  0.251185  0.156398  0.085308   
+Germany           0.018039  0.155950  0.009892  0.330812  0.133838  0.027640   
+Hungary           0.024719  0.159551  0.013483  0.485393  0.143820  0.015730   
+Italy             0.028450  0.119488  0.007112  0.254623  0.197724  0.054054   
+Netherlands       0.021763  0.147987  0.001088  0.341676  0.200218  0.028292   
+Spain             0.004049  0.028340  0.000000  0.101215  0.226721  0.072874   
+Sweden            0.012195  0.073171  0.002439  0.390244  0.175610  0.029268   
+Switzerland       0.043478  0.161685  0.012228  0.361413  0.137228  0.031250   
+UK                0.011084  0.056650  0.002463  0.217980  0.253695  0.044335   
+USA               0.005976  0.035857  0.001992  0.135458  0.278884  0.091633   
+other             0.012853  0.079692  0.000000  0.308483  0.231362  0.056555   
 
-<span class="ansi-red-fg">NameError</span>: name 'get_demodata' is not defined</pre>
-</div>
+                     sight    museum  
+Country                               
+Austria (Vienna)  0.163774  0.057484  
+Austria (other)   0.211242  0.067996  
+Belgium           0.304478  0.086567  
+Denmark           0.360845  0.078695  
+France            0.421801  0.175355  
+Germany           0.300262  0.083503  
+Hungary           0.391011  0.159551  
+Italy             0.460882  0.254623  
+Netherlands       0.304679  0.072905  
+Spain             0.813765  0.404858  
+Sweden            0.365854  0.065854  
+Switzerland       0.210598  0.051630  
+UK                0.427340  0.091133  
+USA               0.631474  0.270916  
+other             0.539846  0.228792  </code></pre>
 </div>
 </div>
 
