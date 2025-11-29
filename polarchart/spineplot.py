@@ -197,6 +197,11 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
         ax.set_yticks(at)
         ax.set_yticklabels([f"{x:.{digits}f}" for x in y_bins])
 
+    # Adding secondary y-axis with fixed set of positions
+    ax2 = ax.twinx()
+    ax2.set_ylim(0, 1)
+    ax2.set_yticks([0, 0.2, 0.4, 0.6, 0.8, 1.0])
+
     # Adding title if requested
     if "title" in kwargs: ax.set_title(kwargs["title"])
 
