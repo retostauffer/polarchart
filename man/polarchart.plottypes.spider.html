@@ -76,6 +76,9 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <script src="../site_libs/bootstrap/bootstrap.min.js"></script>
 <link href="../site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
 <link href="../site_libs/bootstrap/bootstrap-220262ad8004bb26d053ca0d9c5a3a4f.min.css" rel="stylesheet" append-hash="true" id="quarto-bootstrap" data-mode="light">
+<script src="../site_libs/quarto-contrib/glightbox/glightbox.min.js"></script>
+<link href="../site_libs/quarto-contrib/glightbox/glightbox.min.css" rel="stylesheet">
+<link href="../site_libs/quarto-contrib/glightbox/lightbox.css" rel="stylesheet">
 <script id="quarto-search-options" type="application/json">{
   "location": "navbar",
   "copy-button": false,
@@ -266,7 +269,7 @@ If None, a new figure is initialized. Else the existing axis is taken, manipulat
 <code id="polarchart.plottypes.spider:ncol">ncol</code><code class="argument-class">None or int</code>
 </dt>
 <dd>
-If none, a (near) quadratic grid will be created. Can e specified by the user to adjust the gridding.
+If <code>None</code>, a (near) quadratic grid will be created. Can e specified by the user to adjust the gridding. If <code>single_graph = True</code> this argument controls the number of columns of the color legend (defaults to <code>4</code> if <code>None</code>).
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
 <code id="polarchart.plottypes.spider:scale">scale</code><code class="argument-class">bool</code>
@@ -284,19 +287,25 @@ If True, circles are drawn on top of the radar charts.
 <code id="polarchart.plottypes.spider:legend_position">legend_position</code><code class="argument-class">None, bool, or tuple</code>
 </dt>
 <dd>
-If ‘None’ (or ‘True’) the legend is positioned automatically. A tuple can be provided (x/y coordinates) to manually position, where ‘(x, y)’ corresponds to ‘(left, downwards)’ with ‘(0, 0)’ corresponding to the position of the first radar plot (top left one). If set ‘False’ the legend will not be drawn at all.
+If ‘None’ (or ‘True’) the legend is positioned automatically. A tuple can be provided (x/y coordinates) to manually position, where ‘(x, y)’ corresponds to ‘(left, downwards)’ with ‘(0, 0)’ corresponding to the position of the first radar plot (top left one). If set <code>False</code> the legend will not be drawn at all. See also argument <code>single_graph</code>.
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
 <code id="polarchart.plottypes.spider:color">color</code><code class="argument-class">None, bool, list</code>
 </dt>
 <dd>
-If <code>None</code> (same as <code>True</code>) N colors from the qualitative palette ‘Dynamic’ (<code>colorspace.qualitative_hcl("Dynamic")</code>) will be used. Can be a list of valid colors/hex colors or <code>False</code> to not fill the polygons (<code>radar()</code>, <code>stars()</code>).
+If <code>None</code> (same as <code>True</code>) N colors from the qualitative palette ‘Dynamic’ (<code>colorspace.qualitative_hcl("Dynamic")</code>) will be used. Can be a list of valid colors/hex colors or <code>False</code> to not fill the polygons (<code>radar()</code>, <code>stars()</code>). See also argument <code>single_graph</code>.
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
 <code id="polarchart.plottypes.spider:numeric_only">numeric_only</code><code class="argument-class">bool</code>
 </dt>
 <dd>
 Defaults to <code>False</code>, if set <code>True</code> all non-numeric columns/variables will be excluded.
+</dd>
+<dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
+<code id="polarchart.plottypes.spider:single_graph">single_graph</code><code class="argument-class">bool</code>
+</dt>
+<dd>
+Defaults to <code>False</code>. If set <code>True</code> one single graph will be drawn with data superimposed on each other. In this case no legend is drawn as the labels are drawn on the single graph, and <code>color</code> is mapped to the rows of the DataFrame, not the columns.
 </dd>
 <dt style="white-space: nowrap; font-family: monospace; vertical-align: top">
 <code id="polarchart.plottypes.spider:*args">*args</code>
@@ -318,23 +327,25 @@ Additional keyword arguments, see Details for more information.
 </section>
 <section id="examples" class="level3">
 <h3 class="anchored" data-anchor-id="examples">Examples</h3>
-<div id="07991f09" class="cell" data-execution_count="1">
-<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> get_demodata</span>
-<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> radar, spider, spider</span>
-<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>gsa <span class="op">=</span> get_demodata(<span class="st">"gsa"</span>)</span>
-<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(gsa.head())</span>
-<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co">## Default options (first three rows, three columns)</span></span>
-<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>spider(gsa.iloc[:<span class="dv">6</span>,:], title <span class="op">=</span> <span class="st">"Default spider chart"</span>)</span>
-<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a></span>
-<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="co">## Customized: No circles, custom legend position, colors, and figure size.</span></span>
-<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> colorspace <span class="im">import</span> diverging_hcl</span>
-<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>spider(gsa.iloc[:<span class="dv">6</span>,:],</span>
-<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>       title   <span class="op">=</span> <span class="st">"Customized spider chart"</span>,</span>
-<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>       circles <span class="op">=</span> <span class="va">False</span>,</span>
-<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>       legend_position <span class="op">=</span> (<span class="fl">1.5</span>, <span class="dv">2</span>),</span>
-<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>       color   <span class="op">=</span> diverging_hcl(<span class="st">"Green-Orange"</span>)(gsa.shape[<span class="dv">1</span>]),</span>
-<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>       figsize <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">8</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div id="839cae87" class="cell" data-execution_count="1">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> get_demodata, spider</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>gsa <span class="op">=</span> get_demodata(<span class="st">"gsa"</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(gsa.head())</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co">## Default options (first three rows, three columns)</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>spider(gsa.iloc[:<span class="dv">6</span>,:], title <span class="op">=</span> <span class="st">"Default spider chart"</span>)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co">## Customized: No circles, custom legend position, colors, and figure size.</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> colorspace <span class="im">import</span> diverging_hcl</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>spider(gsa.iloc[:<span class="dv">6</span>,:],</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>       title   <span class="op">=</span> <span class="st">"Customized spider chart"</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>       circles <span class="op">=</span> <span class="va">False</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>       legend_position <span class="op">=</span> (<span class="fl">1.5</span>, <span class="dv">2</span>),</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>       color   <span class="op">=</span> diverging_hcl(<span class="st">"Green-Orange"</span>)(gsa.shape[<span class="dv">1</span>]),</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>       figsize <span class="op">=</span> (<span class="dv">12</span>, <span class="dv">8</span>))</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a><span class="co">## Single-graph layout:</span></span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>spider(gsa, title <span class="op">=</span> <span class="st">"Single-graph layout"</span>, single_graph <span class="op">=</span> <span class="va">True</span>, ncol <span class="op">=</span> <span class="dv">3</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-stdout">
 <pre><code>                    tennis     cycle      ride      swim      shop   concert  \
 Country                                                                        
@@ -355,14 +366,21 @@ France            0.421801  0.175355  </code></pre>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-2.png" width="463" height="483" class="figure-img"></p>
+<p><a href="polarchart.plottypes.spider_files/figure-html/cell-2-output-2.png" class="lightbox" data-gallery="quarto-lightbox-gallery-1"><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-2.png" width="463" height="483" class="figure-img"></a></p>
 </figure>
 </div>
 </div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-3.png" width="611" height="631" class="figure-img"></p>
+<p><a href="polarchart.plottypes.spider_files/figure-html/cell-2-output-3.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-3.png" width="611" height="631" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="polarchart.plottypes.spider_files/figure-html/cell-2-output-4.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="polarchart.plottypes.spider_files/figure-html/cell-2-output-4.png" width="407" height="522" class="figure-img"></a></p>
 </figure>
 </div>
 </div>
@@ -773,6 +791,38 @@ France            0.421801  0.175355  </code></pre>
   });
   </script>
 </div> <!-- /content -->
+<script>var lightboxQuarto = GLightbox({"closeEffect":"zoom","descPosition":"bottom","loop":false,"openEffect":"zoom","selector":".lightbox"});
+(function() {
+  let previousOnload = window.onload;
+  window.onload = () => {
+    if (previousOnload) {
+      previousOnload();
+    }
+    lightboxQuarto.on('slide_before_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      const href = trigger.getAttribute('href');
+      if (href !== null) {
+        const imgEl = window.document.querySelector(`a[href="${href}"] img`);
+        if (imgEl !== null) {
+          const srcAttr = imgEl.getAttribute("src");
+          if (srcAttr && srcAttr.startsWith("data:")) {
+            slideConfig.href = srcAttr;
+          }
+        }
+      } 
+    });
+  
+    lightboxQuarto.on('slide_after_load', (data) => {
+      const { slideIndex, slideNode, slideConfig, player, trigger } = data;
+      if (window.Quarto?.typesetMath) {
+        window.Quarto.typesetMath(slideNode);
+      }
+    });
+  
+  };
+  
+})();
+          </script>
 
 
 
