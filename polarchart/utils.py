@@ -3,6 +3,20 @@
 import numpy as np
 
 
+def match_arg(what, x, allowed):
+    if not isinstance(what, str):
+        raise TypeError("argument 'what' must be str")
+    if not isinstance(x, str):
+        raise TypeError("argument 'x' must be str")
+    if not isinstance(allowed, (str, list)):
+        raise TypeError("argument 'allowed' must be list or str")
+    if isinstance(allowed, str): allowed = [allowed]
+
+    if not x in allowed:
+        raise ValueError(f"{what} = \"{x}\" not allowed, must be one of {allowed=}")
+
+    return x
+
 def scale_df(df):
     """scale_df(df)
 
