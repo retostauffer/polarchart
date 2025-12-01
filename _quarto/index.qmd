@@ -29,7 +29,9 @@ gsa.head(n = 2)
 radar(gsa, scale = True, title = "Demo figure", figsize = (10, 8))
 ```
 
-# Spine plot
+# Spine plots
+
+NASA space shuttle o-ring failures
 
 ```{python}
 from pandas import Series, DataFrame
@@ -47,5 +49,29 @@ df   = DataFrame({"fail": Series(fail).astype("category"),
 df.fail = df.fail.cat.reorder_categories(["yes", "no"])
 
 ## Plotting
-res = spineplot(df, "temperature", "fail", figsize = (7, 3))
+res = spineplot(df, "temperature", "fail", figsize = (7, 3),
+                title = "NASA space shuttle o-ring failures")
 ```
+
+
+Student Admissions at UC Berkeley
+
+```{python}
+from pandas import Categorical, DataFrame
+from numpy import repeat
+from polarchart import spineplot
+import matplotlib.pyplot as plt
+
+UCBA = DataFrame({"Admit":  Categorical(repeat(["Admitted", "Rejected"], [12, 12])),
+                  "Gender": Categorical(repeat(["Male", "Female", "Male", "Female"], [6, 6, 6, 6])),
+                  "Dept":   Categorical(repeat([["A", "B", "C", "D", "E", "F"]], 4, axis = 0).flatten()),
+                  "Freq":   [512, 353, 120, 138, 53, 22, 89, 17, 202, 131, 94, 24,
+                             313, 207, 205, 279, 138, 351, 19, 8, 391, 244, 299, 317]})
+
+fig, axs = plt.subplots(2, 1, figsize = (6, 8))
+spineplot(UCBA, x = "Dept", y = "Gender", ax = axs[0])
+spineplot(UCBA, x = "Dept", y = "Gender", values = "Freq", labels = "absolute",
+          digits = 1, ax = axs[1], fontcolor = "red")
+plt.show()
+```
+

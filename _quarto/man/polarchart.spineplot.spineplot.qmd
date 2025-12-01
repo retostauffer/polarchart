@@ -15,7 +15,7 @@ to easily create two-dimensional spine plots based on
 
 ### Usage
 
-<pre><code class='language-python'>spineplot(df, x, y, labels=None, ax=None,<br/>          colors=None, *args, **kwargs)</code></pre>
+<pre><code class='language-python'>spineplot(df, x, y, values=None,<br/>          aggfunc=&#x27;mean&#x27;, labels=None,<br/>          ax=None, colors=None, *args, **kwargs)</code></pre>
 
 ### Arguments
 
@@ -34,6 +34,18 @@ to easily create two-dimensional spine plots based on
  <dd>Name of the variable for the second dimension. Must be
 categorical or easily convertable to categorical (i.e.,
 strings or integers with less than 10 unique values).</dd>
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.spineplot.spineplot:values">values</code><code class="argument-class">None, str</code>
+  </dt>
+ <dd>If `None` (default) absolute/relative counts are calculated
+and displayed. The name of an additional column in `df` can be specified which
+will be used (in combination with `aggfunc`) to calculate the values visualized.</dd>
+  <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
+   <code id="polarchart.spineplot.spineplot:aggfunc">aggfunc</code><code class="argument-class">str</code>
+  </dt>
+ <dd>Ignored if `values = None`. If `values` is specified a function
+or a string with the name of a numpy function can be specified used for
+aggregation. Defaults to `"mean"` (`numpy.mean`).</dd>
   <dt style = "white-space: nowrap; font-family: monospace; vertical-align: top">
    <code id="polarchart.spineplot.spineplot:labels">labels</code><code class="argument-class">None, str</code>
   </dt>
@@ -76,7 +88,7 @@ axis is returned.
 #| warning: true
 #| error: true
 from numpy import repeat
-from pandas import DataFrame, Series
+from pandas import DataFrame, Series, Categorical
 from polarchart import spineplot
 import matplotlib.pyplot as plt
 
@@ -105,6 +117,18 @@ fig, ax = plt.subplots(figsize = (7, 3))
 spineplot(df, x = "temperature", y = "fail", ax = ax,
           title = "NASA space shuttle o-ring failures",
           colors = ["#21CCAD", "#F99BAE"])
+plt.show()
+
+## Student Admissions at UC Berkeley
+UCBA = DataFrame({"Admit":  Categorical(repeat(["Admitted", "Rejected"], [12, 12])),
+                  "Gender": Categorical(repeat(["Male", "Female", "Male", "Female"], [6, 6, 6, 6])),
+                  "Dept":   Categorical(repeat([["A", "B", "C", "D", "E", "F"]], 4, axis = 0).flatten()),
+                  "Freq":   [512, 353, 120, 138, 53, 22, 89, 17, 202, 131, 94, 24,
+                             313, 207, 205, 279, 138, 351, 19, 8, 391, 244, 299, 317]})
+fig, axs = plt.subplots(2, 1, figsize = (6, 8))
+spineplot(UCBA, x = "Dept", y = "Gender", ax = axs[0])
+spineplot(UCBA, x = "Dept", y = "Gender", values = "Freq", labels = "absolute",
+          digits = 1, ax = axs[1], fontcolor = "steelblue")
 plt.show()
 ```
 

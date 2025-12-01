@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 from statsmodels.graphics.mosaicplot import mosaic
 from matplotlib import colors as mcolors
 
-def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs):
+def spineplot(df, x, y, values = None, aggfunc = "mean", labels = None, ax = None, colors = None, *args, **kwargs):
     """Two-dimensional Spine Plots
 
     Spine plots are a special cases of mosaic plots, and can be seen as a
@@ -24,6 +24,12 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
         y (str): Name of the variable for the second dimension. Must be
             categorical or easily convertable to categorical (i.e.,
             strings or integers with less than 10 unique values).
+        values (None, str): If `None` (default) absolute/relative counts are calculated
+            and displayed. The name of an additional column in `df` can be specified which
+            will be used (in combination with `aggfunc`) to calculate the values visualized.
+        aggfunc (str): Ignored if `values = None`. If `values` is specified a function
+            or a string with the name of a numpy function can be specified used for
+            aggregation. Defaults to `"mean"` (`numpy.mean`).
         labels (None, str): Either `None` (default) to suppress labels,
             or one of `"absolute"`, `"relative"`, `"percent"`.
         ax (None or matplotlib.axes._axes.Axes): If None, a new figure is
@@ -50,11 +56,13 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
         - "title" (str): Plot title
         - "figsize" (tuple): Custom figure size, ignored if an axis ('ax') is provided.
         - "flipud" (bool): Flip y axis upside down (default is False).
+        - "digits" (int): Defaults to `1`, only used if `values = None`; can be used to
+            format the labels if `labels` is not `None`.
 
     Examples:
 
         >>> from numpy import repeat
-        >>> from pandas import DataFrame, Series
+        >>> from pandas import DataFrame, Series, Categorical
         >>> from polarchart import spineplot
         >>> import matplotlib.pyplot as plt
 
@@ -90,6 +98,19 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
         >>>           colors = ["#21CCAD", "#F99BAE"])
         >>> plt.show()
 
+        Student Admissions at UC Berkeley
+        >>> UCBA = DataFrame({"Admit":  Categorical(repeat(["Admitted", "Rejected"], [12, 12])),
+        >>>                   "Gender": Categorical(repeat(["Male", "Female", "Male", "Female"], [6, 6, 6, 6])),
+        >>>                   "Dept":   Categorical(repeat([["A", "B", "C", "D", "E", "F"]], 4, axis = 0).flatten()),
+        >>>                   "Freq":   [512, 353, 120, 138, 53, 22, 89, 17, 202, 131, 94, 24,
+        >>>                              313, 207, 205, 279, 138, 351, 19, 8, 391, 244, 299, 317]})
+        >>>
+        >>> fig, axs = plt.subplots(2, 1, figsize = (6, 8))
+        >>> spineplot(UCBA, x = "Dept", y = "Gender", ax = axs[0])
+        >>> spineplot(UCBA, x = "Dept", y = "Gender", values = "Freq", labels = "absolute",
+        >>>           digits = 1, ax = axs[1], fontcolor = "steelblue")
+        >>> plt.show()
+
 
     """
 
@@ -108,6 +129,8 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
         raise TypeError("argument 'x' must be str")
     if not isinstance(y, str):
         raise TypeError("argument 'y' must be str")
+    if not isinstance(values, (type(None), str)):
+        raise TypeError("argument 'values' must be None or str")
     if not isinstance(labels, (type(None), str)):
         raise TypeError("argument 'labels' must be None or str")
     if not isinstance(ax, (axes._axes.Axes, type(None))):
@@ -119,10 +142,28 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
         raise ValueError(f"variable {x=} not found in 'df'")
     if not y in df.columns:
         raise ValueError(f"variable {y=} not found in 'df'")
+    if not values is None:
+        if not values in df.columns:
+            raise ValueError(f"variable {values=} not found in 'df'")
+
+    # Evaluate label argument
     if labels is not None:
-        labels_allowed = ["absolute", "relative", "percent"]
-        if not labels in labels_allowed:
-            raise ValueError(f"argument 'labels' must be None or one of {', '.join(labels_allowed)}")
+        if values is None:
+            labels_allowed = ["absolute", "relative", "percent"]
+            if not labels in labels_allowed:
+                raise ValueError(f"argument 'labels' must be None or one of {', '.join(labels_allowed)}")
+        else:
+            labels_allowed = ["absolute"]
+            if not labels in labels_allowed:
+                raise ValueError(f"argument 'labels' must be None or \"absolute\" if `values` are used")
+
+    # Evaluate aggfunc if values is not None
+    if not values is None:
+        if isinstance(aggfunc, str):
+            from importlib import import_module
+            aggfunc = getattr(import_module("numpy"), aggfunc)
+        elif not callable(aggfunc):
+            raise TypeError("aggfunc is not callable (not a function)")
 
     if ax is None:
         figsize = (6, 6) if not "figsize" in kwargs else kwargs["figsize"]
@@ -138,19 +179,42 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
             raise TypeError("**kwarg 'flipud' must be bool")
     flipud = False if not "flipud" in kwargs else kwargs["flipud"]
 
+    fontcolor = "black" # Default
+    if "fontcolor" in kwargs:
+        if not isinstance(kwargs["fontcolor"], str):
+            raise TypeError("**kwarg 'fontcolor' must be str")
+        fontcolor = kwargs["fontcolor"]
+
+    digits = 0 if values is None else 2
+    if "digits" in kwargs:
+        if not isinstance(kwargs["digits"], int):
+            raise TypeError("**kwarg 'digits' must be int")
+        elif not kwargs["digits"] >= 0:
+            raise ValueError("**kwarg 'digits' must be 0 or lager")
+        digits = kwargs["digits"]
+
     # Convert original data to categorical
     x_cat, x_bins = column_to_category(df[x])
     y_cat, y_bins = column_to_category(df[y], nmax = 10)
 
     # Create new data.frame with only categorical data
-    df = pd.DataFrame(dict(x = x_cat, y = y_cat))
+    if values is None:
+        tmp = dict(x = x_cat, y = y_cat)
+    else:
+        tmp = dict(x = x_cat, y = y_cat, values = df[values])
+
+    df = pd.DataFrame(tmp) # Glue together to working Dataframe
 
     # ---------------------------------------------------------------
     # Setting up the plot
     # ---------------------------------------------------------------
 
     # Calculate absolute counts (cross-table)
-    tab = pd.crosstab(df.x, df.y)
+    if values is None:
+        tab = pd.crosstab(df["x"], df["y"])
+    else:
+        tab = pd.crosstab(df["x"], df["y"], values = df["values"], aggfunc = lambda x: aggfunc(x))
+
     tab.index   = tab.index.astype("str")
     tab.columns = tab.columns.astype("str")
 
@@ -170,9 +234,9 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
         x = tab.loc[x[0], x[1]]
         n = df.shape[0]
         match labels:
-            case "percent":     return(np.round(x / n * 100, 3))
-            case "relative":    return(x / n)
-            case _:             return(x)
+            case "percent":     return f"{np.round(x / n * 100, 3):.1f}%"
+            case "relative":    return f"{(x / n):.3f}"
+            case _:             return f"{x:.{digits}f}"
 
     # Gap 0.02 to ~0.01
     gap = 0 if x_bins is not None else 0.01 + 0.01 / df.x.nunique()
@@ -182,6 +246,14 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
            properties = colors, gap = (gap, 0),
            statistic = False, labelizer = labelizer)
 
+    from matplotlib.text import Text
+    for t in ax.findobj(Text):
+        if t in ax.get_xticklabels() or t in ax.get_yticklabels():
+            continue
+        if t is ax.title or t is ax.xaxis.label or t is ax.yaxis.label:
+            continue
+        t.set_color(fontcolor)
+
     # I updating axis
     if x_bins is not None:
         digits = required_digits(x_bins)
@@ -189,6 +261,7 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
         at = at / np.max(at)
         ax.set_xticks(at)
         ax.set_xticklabels([f"{x:.{digits}f}" for x in x_bins])
+    ax.set_xlabel(x)
 
     if y_bins is not None:
         digits = required_digits(y_bins)
@@ -196,6 +269,9 @@ def spineplot(df, x, y, labels = None, ax = None, colors = None, *args, **kwargs
         at = at / np.max(at)
         ax.set_yticks(at)
         ax.set_yticklabels([f"{x:.{digits}f}" for x in y_bins])
+    ax.tick_params(axis = "y", labelrotation = 90)
+    for label in ax.get_yticklabels(): label.set_verticalalignment("center")
+    ax.set_ylabel(y)
 
     # Adding secondary y-axis with fixed set of positions
     ax2 = ax.twinx()
