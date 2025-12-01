@@ -206,7 +206,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
    
   <ul>
   <li><a href="#radar-starspider-plot-example" id="toc-radar-starspider-plot-example" class="nav-link active" data-scroll-target="#radar-starspider-plot-example">Radar (star/spider) plot example</a></li>
-  <li><a href="#spine-plot" id="toc-spine-plot" class="nav-link" data-scroll-target="#spine-plot">Spine plot</a></li>
+  <li><a href="#spine-plots" id="toc-spine-plots" class="nav-link" data-scroll-target="#spine-plots">Spine plots</a></li>
   </ul>
 </nav>
     </div>
@@ -240,7 +240,7 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </ul>
 <section id="radar-starspider-plot-example" class="level1">
 <h1>Radar (star/spider) plot example</h1>
-<div id="08bc090d" class="cell" data-execution_count="1">
+<div id="a2c3929f" class="cell" data-execution_count="1">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> get_demodata, radar</span>
 <span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="co"># Loading data set shipped with the package; pandas DataFrame</span></span>
@@ -258,9 +258,10 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 </div>
 </div>
 </section>
-<section id="spine-plot" class="level1">
-<h1>Spine plot</h1>
-<div id="47417b5c" class="cell" data-execution_count="2">
+<section id="spine-plots" class="level1">
+<h1>Spine plots</h1>
+<p>NASA space shuttle o-ring failures</p>
+<div id="bd606534" class="cell" data-execution_count="2">
 <div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pandas <span class="im">import</span> Series, DataFrame</span>
 <span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> spineplot</span>
 <span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a></span>
@@ -276,11 +277,38 @@ pre > code.sourceCode > span > a:first-child::before { text-decoration: underlin
 <span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>df.fail <span class="op">=</span> df.fail.cat.reorder_categories([<span class="st">"yes"</span>, <span class="st">"no"</span>])</span>
 <span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a></span>
 <span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">## Plotting</span></span>
-<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> spineplot(df, <span class="st">"temperature"</span>, <span class="st">"fail"</span>, figsize <span class="op">=</span> (<span class="dv">7</span>, <span class="dv">3</span>))</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a>res <span class="op">=</span> spineplot(df, <span class="st">"temperature"</span>, <span class="st">"fail"</span>, figsize <span class="op">=</span> (<span class="dv">7</span>, <span class="dv">3</span>),</span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a>                title <span class="op">=</span> <span class="st">"NASA space shuttle o-ring failures"</span>)</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
 <div class="cell-output cell-output-display">
 <div>
 <figure class="figure">
-<p><a href="index_files/figure-html/cell-3-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="index_files/figure-html/cell-3-output-1.png" width="603" height="268" class="figure-img"></a></p>
+<p><a href="index_files/figure-html/cell-3-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-2"><img src="index_files/figure-html/cell-3-output-1.png" width="611" height="302" class="figure-img"></a></p>
+</figure>
+</div>
+</div>
+</div>
+<p>Student Admissions at UC Berkeley</p>
+<div id="824e42dd" class="cell" data-execution_count="3">
+<div class="code-copy-outer-scaffold"><div class="sourceCode cell-code" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> pandas <span class="im">import</span> Categorical, DataFrame</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpy <span class="im">import</span> repeat</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> polarchart <span class="im">import</span> spineplot</span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>UCBA <span class="op">=</span> DataFrame({<span class="st">"Admit"</span>:  Categorical(repeat([<span class="st">"Admitted"</span>, <span class="st">"Rejected"</span>], [<span class="dv">12</span>, <span class="dv">12</span>])),</span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Gender"</span>: Categorical(repeat([<span class="st">"Male"</span>, <span class="st">"Female"</span>, <span class="st">"Male"</span>, <span class="st">"Female"</span>], [<span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>, <span class="dv">6</span>])),</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Dept"</span>:   Categorical(repeat([[<span class="st">"A"</span>, <span class="st">"B"</span>, <span class="st">"C"</span>, <span class="st">"D"</span>, <span class="st">"E"</span>, <span class="st">"F"</span>]], <span class="dv">4</span>, axis <span class="op">=</span> <span class="dv">0</span>).flatten()),</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a>                  <span class="st">"Freq"</span>:   [<span class="dv">512</span>, <span class="dv">353</span>, <span class="dv">120</span>, <span class="dv">138</span>, <span class="dv">53</span>, <span class="dv">22</span>, <span class="dv">89</span>, <span class="dv">17</span>, <span class="dv">202</span>, <span class="dv">131</span>, <span class="dv">94</span>, <span class="dv">24</span>,</span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a>                             <span class="dv">313</span>, <span class="dv">207</span>, <span class="dv">205</span>, <span class="dv">279</span>, <span class="dv">138</span>, <span class="dv">351</span>, <span class="dv">19</span>, <span class="dv">8</span>, <span class="dv">391</span>, <span class="dv">244</span>, <span class="dv">299</span>, <span class="dv">317</span>]})</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a>fig, axs <span class="op">=</span> plt.subplots(<span class="dv">2</span>, <span class="dv">1</span>, figsize <span class="op">=</span> (<span class="dv">6</span>, <span class="dv">8</span>))</span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a>spineplot(UCBA, x <span class="op">=</span> <span class="st">"Dept"</span>, y <span class="op">=</span> <span class="st">"Gender"</span>, ax <span class="op">=</span> axs[<span class="dv">0</span>])</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>spineplot(UCBA, x <span class="op">=</span> <span class="st">"Dept"</span>, y <span class="op">=</span> <span class="st">"Gender"</span>, values <span class="op">=</span> <span class="st">"Freq"</span>, labels <span class="op">=</span> <span class="st">"absolute"</span>,</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a>          digits <span class="op">=</span> <span class="dv">1</span>, ax <span class="op">=</span> axs[<span class="dv">1</span>], fontcolor <span class="op">=</span> <span class="st">"red"</span>)</span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code></pre></div><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></div>
+<div class="cell-output cell-output-display">
+<div>
+<figure class="figure">
+<p><a href="index_files/figure-html/cell-4-output-1.png" class="lightbox" data-gallery="quarto-lightbox-gallery-3"><img src="index_files/figure-html/cell-4-output-1.png" width="537" height="656" class="figure-img"></a></p>
 </figure>
 </div>
 </div>
