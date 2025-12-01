@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import os, sys
-from polarchart import radar, get_demodata
+from polarchart import radar, get_demodata, spider, stars
 import pandas as pd
 import matplotlib.pyplot as plt
 
@@ -9,12 +9,16 @@ import matplotlib.pyplot as plt
 gsa4 = get_demodata("gsa4")
 
 print(gsa4.head())
-radar(gsa4, labels = "ISO3", numeric_only = True,
+spider(gsa4, labels = "ISO3", numeric_only = True,
       angle = 45, title = "Testing angle argument")
-radar(gsa4, labels = "ISO3", numeric_only = True,
+spider(gsa4, labels = "ISO3", numeric_only = True, single_graph = True,
       angle = 45, title = "Testing angle argument")
-radar(gsa4, labels = "ISO3", numeric_only = True,
-      scale = False)
+stars(gsa4, labels = "ISO3", numeric_only = True, single_graph = True,
+      angle = 45, title = "Testing angle argument")
+#radar(gsa4, labels = "ISO3", numeric_only = True,
+#      angle = 45, title = "Testing angle argument")
+#radar(gsa4, labels = "ISO3", numeric_only = True,
+#      scale = False)
 
 ##
 import sys; sys.exit(" -- psa4 -- ")

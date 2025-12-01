@@ -39,8 +39,7 @@ def copy_doc(from_func, new_examples = None):
 ex = """
     Examples:
 
-        >>> from polarchart import get_demodata
-        >>> from polarchart import radar, stars, spider
+        >>> from polarchart import get_demodata, stars
         >>> gsa = get_demodata("gsa")
         >>> print(gsa.head())
 
@@ -55,6 +54,9 @@ ex = """
         >>>       legend_position = (1.5, 2),
         >>>       color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
         >>>       figsize = (12, 8))
+
+        Single-graph layout:
+        >>> stars(gsa, title = "Single-graph layout", single_graph = True)
 """
 @copy_doc(radar, ex)
 def stars(*args, **kwargs):
@@ -64,8 +66,7 @@ def stars(*args, **kwargs):
 ex = """
     Examples:
 
-        >>> from polarchart import get_demodata
-        >>> from polarchart import radar, spider, spider
+        >>> from polarchart import get_demodata, spider
         >>> gsa = get_demodata("gsa")
         >>> print(gsa.head())
 
@@ -81,6 +82,9 @@ ex = """
         >>>        legend_position = (1.5, 2),
         >>>        color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
         >>>        figsize = (12, 8))
+
+        Single-graph layout:
+        >>> spider(gsa, title = "Single-graph layout", single_graph = True, ncol = 3)
 """
 @copy_doc(radar, ex)
 def spider(*args, **kwargs):

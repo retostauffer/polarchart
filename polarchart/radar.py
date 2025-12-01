@@ -2,11 +2,12 @@
 import numpy as np
 import pandas as pd
 import matplotlib.pyplot as plt
-from matplotlib.patches import Polygon
+from matplotlib.patches import Polygon, Patch
 from colorspace import qualitative_hcl
 
 def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = True,
-          legend_position = None, color = None, numeric_only = False, *args, **kwargs):
+          legend_position = None, color = None, numeric_only = False,
+          single_graph = False, *args, **kwargs):
     """Radar (Star/Spider) Plots and Segment Diagrams
 
     Draw star plots or segment diagrams of a multivariate data set.
@@ -27,23 +28,31 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
             column/variable of the DataFrame is used to label the plots.
         ax (None or matplotlib.axes._axes.Axes): If None, a new figure is
             initialized. Else the existing axis is taken, manipulated, and populated.
-        ncol (None or int): If none, a (near) quadratic grid will be created. Can e
-            specified by the user to adjust the gridding.
+        ncol (None or int): If `None`, a (near) quadratic grid will be created. Can e
+            specified by the user to adjust the gridding. If `single_graph = True`
+            this argument controls the number of columns of the color legend
+            (defaults to `4` if `None`).
         scale (bool):
             Should the data in 'df' be scaled?
         circles (bool):
             If True, circles are drawn on top of the radar charts.
-        legend_position (None, bool, or tuple): If 'None' (or 'True') the legend is
-            positioned automatically. A tuple can be provided (x/y coordinates) to
-            manually position, where '(x, y)' corresponds to '(left, downwards)' with
-            '(0, 0)' corresponding to the position of the first radar plot (top left
-            one). If set 'False' the legend will not be drawn at all.
+        legend_position (None, bool, or tuple): If 'None' (or 'True') the
+            legend is positioned automatically. A tuple can be provided (x/y
+            coordinates) to manually position, where '(x, y)' corresponds to
+            '(left, downwards)' with '(0, 0)' corresponding to the position of the
+            first radar plot (top left one). If set `False` the legend will not be
+            drawn at all. See also argument `single_graph`.
         color (None, bool, list): If `None` (same as `True`) N colors from the
             qualitative palette 'Dynamic' (`colorspace.qualitative_hcl("Dynamic")`)
             will be used. Can be a list of valid colors/hex colors or `False` to
-            not fill the polygons (`radar()`, `stars()`).
+            not fill the polygons (`radar()`, `stars()`). See also argument
+            `single_graph`.
         numeric_only (bool): Defaults to `False`, if set `True` all non-numeric
             columns/variables will be excluded.
+        single_graph (bool): Defaults to `False`. If set `True` one single
+            graph will be drawn with data superimposed on each other. In this
+            case no legend is drawn as the labels are drawn on the single graph,
+            and `color` is mapped to the rows of the DataFrame, not the columns.
         *args:
             Positional arguments; used by other functions interfacing this main
             function (`stars()`, ...).
@@ -61,11 +70,13 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
         - "title" (str): Plot title
         - "angle" (int, float): Rotation angle in degrees.
         - "figsize" (tuple): Custom figure size, ignored if an axis ('ax') is provided.
+        - "_type" (str): Controls the plot type (radar, stars, spider).
+        - "linewidth" (float): Set the width of the outline. By default, the line width
+            is set `0.5` if `single_graph = False`, else `1.0` Can be overwritten.
 
     Examples:
 
-        >>> from polarchart import get_demodata
-        >>> from polarchart import radar, stars, spider
+        >>> from polarchart import get_demodata, radar
         >>> gsa = get_demodata("gsa")
         >>> print(gsa.head())
         >>>
@@ -82,6 +93,9 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
         >>>       legend_position = (1.5, 2),
         >>>       color   = diverging_hcl("Green-Orange")(gsa.shape[1]),
         >>>       figsize = (12, 8))
+
+        Single-graph layout:
+        >>> radar(gsa, title = "Single-graph layout", single_graph = True)
     """
 
     from pandas import DataFrame
@@ -109,6 +123,8 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
         raise TypeError("argument 'color' must be None or list")
     if not isinstance(numeric_only, bool):
         raise TypeError("argument 'numeric_only' must be bool")
+    if not isinstance(single_graph, bool):
+        raise TypeError("argument 'single_graph' must be bool")
     if legend_position is None: legend_position = True
 
     # Value checks
@@ -120,9 +136,12 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
         if not all([isinstance(x, (int, float)) for x in legend_position]):
             raise ValueError("elements in 'legend_position' must be numeric")
 
+    # If single_graph is set we suppress the legend
+    if single_graph: legend_position = False
+
     # Set of colors
     if color is None or color is True:
-        color = qualitative_hcl("Dynamic")(df.shape[1])
+        color = qualitative_hcl("Dynamic")(df.shape[0 if single_graph else 1])
 
     # -----------------------------------------------------------------
     # Evaluating some kwargs
@@ -131,10 +150,21 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
         if not isinstance(kwargs["_type"], str):
             raise TypeError("**kwarg '_type' must be str")
     _type = "radar" if not "_type" in kwargs else kwargs["_type"]
+    if not _type in ["radar", "spider", "stars"]:
+        raise ValueError("argument _type must be one of \"radar\", \"spider\", or \"stars\"")
     if "title" in kwargs:
         if not isinstance(kwargs["title"], str):
             raise TypeError("**kwarg 'title' must be str")
     title = "Awesome stars plot" if not "title" in kwargs else kwargs["title"]
+
+    # Line width
+    if "linewidth" in kwargs:
+        if not isinstance(kwargs["linewidth"], (int, float)):
+            raise TypeError("**kwarg 'linewidth' must be int or float")
+        linewidth = abs(float(kwargs["linewidth"]))
+    else:
+        linewidth = 0.5 if not single_graph else 2.0
+
 
     if "angle" in kwargs:
         if not isinstance(kwargs["angle"], (int, float)):
@@ -208,14 +238,19 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
 
     # The + int(not custom_legend_position) is used to save
     # one grid for the legend if auto-positioned. Else the users
-    # has to find a suitable position themselves.
+    # has to find a suitable position themselves. Is ignored later
+    # if single_graph = True
     nrow, ncol = get_gridsize(axsize, ncol = ncol,
                               n = df.shape[0] + int(not custom_legend_position))
 
     # Setting automatic legend position (bottom right 'grid cell') if 
     # no custom legend position was specified by the user. This variable
     # is also specified if legend_position = False although never used.
-    if not isinstance(legend_position, tuple) and not legend_position is False:
+    # If single_graph = True we set the legend position to (0, 0) and will
+    # only draw the labels (not the full legend) at the end of this function.
+    if single_graph:
+        legend_position = (0, 0)
+    elif not isinstance(legend_position, tuple) and not legend_position is False:
         legend_position = (ncol - 1, nrow - 1)
 
     # -----------------------------------------------------------------
@@ -231,11 +266,15 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
     # to '1.0' to fill one square. Accounts for custom and
     # automatic legend positioning.
     ax.set_axis_off()
-    if not legend_position is False:
+    if not legend_position is False and not single_graph:
         ax.set_xlim(min(-0.5, legend_position[0] - 0.5),
                     max(ncol - 0.5, legend_position[0] + 0.5))
         ax.set_ylim(min(-0.5, legend_position[1] - 0.5),
                     max(nrow - 0.5, legend_position[1] + 0.5))
+    ## If single graph we need space for one plot + legend!
+    elif single_graph:
+        ax.set_xlim(-0.5, 0.5)
+        ax.set_ylim(-0.5, 0.7)
     else:
         ax.set_xlim(-0.5, ncol - 0.5)
         ax.set_ylim(-0.5, nrow - 0.5)
@@ -247,7 +286,12 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
 
     # x/y are the positionas as well as the indices!
     col_index = np.reshape(range(ncol * nrow), (nrow, ncol), order = "C")
-    #print(col_index)
+
+    ## Transparency; used for _type = "stars" if single_graph = True
+    if _type in ["stars", "radar"] and single_graph:
+        alpha = float(1 / np.log(df.shape[0]) * np.log(3) * 0.5)
+    else:
+        alpha = 1.0
 
     # ---------------------------------------------------------------
     # Adding 'data' (drawing the different radar plots)
@@ -260,23 +304,29 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
             if idx >= df.shape[0]: continue # Empty grid cell, continue
 
             ## Calculating polygons for segments as well as label positions
-            polygons, polylabels = get_patches(x      = df.iloc[idx, :],
-                                               _type  = _type,
-                                               center = (x, y),
-                                               color  = color,
-                                               radius = radius,
-                                               xmax   = df_max,
-                                               angle  = angle)
+            polygons, polylabels = get_patches(x         = df.iloc[idx, :],
+                                               _type     = _type,
+                                               center    = (x, y) if not single_graph else (0., 0.),
+                                               color     = color if not single_graph else [color[idx]],
+                                               radius    = radius,
+                                               xmax      = df_max,
+                                               angle     = angle,
+                                               edgecolor = "gray" if not single_graph else color[idx],
+                                               linewidth = linewidth,
+                                               alpha     = alpha)
             ## Draw polygons
             for p in polygons.values(): ax.add_patch(p)
 
             ## Adding labels if requested. Suppressing labels
             ## is not a common usecase but available as an option.
-            if labels:
+            if labels and not single_graph:
                 ax.text(x, y + 0.5, df.index[idx], ha = "center",
                         va = "bottom" if idx % 2 == 0 else "top")
 
-            if circles:
+            ## Adding circles if requested. If `single_graph` we only
+            ## want to draw one set of circles on index 0, i.e., the
+            ## first and only plot drawn.
+            if circles and (not single_graph or idx == 0):
                 # First we calculate what "useful" circles would be by
                 # checking the overall maximum of 'df' and then set up
                 # a vector with circles to draw; always on one digit
@@ -291,7 +341,8 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
                 for k,p in polygons.items():
                     ax.add_patch(p)
                     ax.text(x = polylabels[k][0], y = polylabels[k][1], s = k,
-                            ha = "center", va = "center", color = "gray",
+                            ha = "center", va = "center",
+                            color = "gray" if not single_graph else "dimgray",
                             fontsize = 6)
 
     # ---------------------------------------------------------------
@@ -304,13 +355,26 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
                                            _type  = _type,
                                            center = legend_position,
                                            color  = color,
-                                           radius = 0.25,
+                                           radius = 0.25 if not single_graph else 0.35,
                                            xmax   = 1, # fixed size
-                                           angle  = angle)
+                                           angle  = angle,
+                                           linewidth = linewidth)
         for k in polygons.keys():
-            ax.add_patch(polygons[k])
+            if not single_graph: ax.add_patch(polygons[k])
             ax.text(x = polylabels[k][0], y = polylabels[k][1], s = k,
                     ha = "center", va = "center", fontsize = 7)
+
+        # Adding color legend (single graph only)
+        if single_graph:
+            leg_ncol = 4 if ncol is None else ncol
+            handles = [Patch(color = c, label = l) for c,l in zip(color, df.index)]
+            ax.legend(handles        = handles,
+                      loc            = "lower center", # Placing legend at the bottom
+                      ncol           = df.shape[0] if df.shape[0] <= leg_ncol else leg_ncol,
+                      bbox_to_anchor = (0.5, -0.1),
+                      fontsize       = "small",
+                      frameon        = False)
+
 
     # ---------------------------------------------------------------
     # Adjusting axis and show plot (if required)
@@ -328,7 +392,7 @@ def radar(df, labels = True, ax = None, ncol = None, scale = True, circles = Tru
 
 
 def get_patches(x, _type, center, color, radius, xmax, angle = 0,
-                edgecolor = "gray", linewidth = 0.5):
+                edgecolor = "gray", linewidth = 0.5, alpha = 1.0):
     """get_patches(x, _type, center, color, radius, angle = 0, edgecolor = "gray", linewidth = 0.5)
 
     Args:
@@ -338,8 +402,9 @@ def get_patches(x, _type, center, color, radius, xmax, angle = 0,
             calculated.
         center (tuple): Tuple with two numeric values defining the center of
             the radar plot used for positioning.
-        color (False, list): False suppresses color. A list of valid colors
-            used as facecolor of the segments. radius (float): Radius of the
+        color (False, list): False suppresses facecolor. A list of valid colors
+            used as facecolor of the segments.
+        radius (float): Radius of the
             segments, defaults to '0.43'. The plotting function uses a "1 by 1"
             grid, i.e., two neighboring radar plots are distanced by "1.0" on the
             x/y coordinates. 'radius = 0.43' means that a segment where 'x = 1.0'
@@ -353,6 +418,8 @@ def get_patches(x, _type, center, color, radius, xmax, angle = 0,
             When '0' the first segments starts "to the right" of the center.
         edgecolor (str, int, None): Edge color used to draw polygon outlines.
         linewidth (float): Width of the line for the polygon outlines.
+        alpha (float): A value between `0` (completely transparent) and `1`
+            (completely opaque). Used for `single_graph` displays.
 
     Returns:
         list of dicts : Returns two dictionaries. The first one contains
@@ -372,6 +439,10 @@ def get_patches(x, _type, center, color, radius, xmax, angle = 0,
     ## For '_type == "radar" we use the center of the two 
     ## neighboring thetas, else theta
     label_angle = (theta[:-1] + theta[1:]) / 2.0 if _type == "radar" else theta[:-1]
+
+    ## IF 'color' is a list of length 1, recycle
+    if isinstance(color, list) and len(color) == 1:
+        color = [color[0] for x in range(len(x))]
 
     ## Resulting dictionary
     result = dict()
@@ -397,10 +468,11 @@ def get_patches(x, _type, center, color, radius, xmax, angle = 0,
             arc   = np.column_stack([poly_x, poly_y])
         # Setting up matplotlib.patches.Polygon
         result[x.index[i]] = Polygon(arc,
-                                     closed = not _type == "spider",
+                                     closed    = not _type == "spider",
                                      facecolor = "none" if not color else color[i],
                                      edgecolor = edgecolor,
-                                     linewidth = linewidth)
+                                     linewidth = linewidth,
+                                     alpha     = alpha)
 
         # Calculating label position
         labels[x.index[i]] = (center[0] + 1.4 * radius * np.cos(label_angle[i]),

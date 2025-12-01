@@ -1,14 +1,15 @@
 execute:
-  #cache: false
-  #freeze: false
-  cache: true
-  freeze: auto
+  cache: false
+  freeze: false
+  #cache: true
+  #freeze: auto
 format:
   html:
     theme:
     - quarto
     - polarchart.scss
     toc: true
+    lightbox: true
 project:
   output-dir: _site
   title: polarchart
